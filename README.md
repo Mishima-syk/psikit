@@ -1,3 +1,5 @@
+from [Calculate HOMO and LUMO with Psi4](https://iwatobipen.wordpress.com/2018/08/24/calculate-homo-and-lumo-with-psi4-rdkit-psi4/)
+
 # psikit as a wrapper library?
 
     import psikit
