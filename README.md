@@ -13,7 +13,7 @@ from [Calculate HOMO and LUMO with Psi4](https://iwatobipen.wordpress.com/2018/0
     mol = Chem.MolFromSmiles("c1ccccc1")
     benz = psikit.geometry(mol)
 
-# or psikit as util library?
+# or psikit as a set of util functions library?
 
     import psi4
     from psikit import mol2xyz
