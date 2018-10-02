@@ -13,21 +13,28 @@ class Psikit(object):
         self.psi4.set_num_threads(threads)
         self.wfn = None
 
-    def geometry(self, mol, addHs=False, optimize=False):
+    def rdkit_optimize(self, mol, addHs=True):
+        if addHs:
+            mol = Chem.AddHs(mol)
+        AllChem.EmbedMolecule(mol, useExpTorsionAnglePrefs=True,useBasicKnowledge=True)
+        AllChem.UFFOptimizeMolecule(mol)
+        return mol
+
+    def geometry(self, mol):
         if type(mol) == rdkit.Chem.rdchem.Mol:
-            if addHs:
-                mol = Chem.AddHs(mol)
-            if optimize:
-                AllChem.EmbedMolecule(mol, useExpTorsionAnglePrefs=True,useBasicKnowledge=True)
-                AllChem.UFFOptimizeMolecule(mol)
             xyz = mol2xyz(mol)
         self.psi4.geometry(xyz)        
             
-    def energy(self, basis_sets= "B3LYP/cc-pVDZ", return_wfn=True):
+    def energy(self, basis_sets= "scf/6-31g**", return_wfn=True):
         scf_energy, wfn = self.psi4.energy(basis_sets, return_wfn=return_wfn)
         self.wfn = wfn
         return scf_energy
-    
+
+    def optimize(self, basis_sets= "scf/6-31g**", return_wfn=True):
+        scf_energy, wfn = self.psi4.optimize(basis_sets, return_wfn=return_wfn)
+        self.wfn = wfn
+        return scf_energy
+
     @property
     def HOMO(self):
         return self.wfn.epsilon_a_subset('AO', 'ALL').np[self.wfn.nalpha()-1]

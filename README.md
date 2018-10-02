@@ -5,14 +5,22 @@ from [Calculate HOMO and LUMO with Psi4](https://iwatobipen.wordpress.com/2018/0
     from psikit import Psikit
     from rdkit import Chem
     from rdkit.Chem import AllChem
-    
+        
     pk = Psikit()
     mol = Chem.MolFromSmiles("c1ccccc1")
-    pk.geometry(mol, addHs=True, optimize=True)
+    mol = pk.rdkit_optimize(mol)
+    pk.geometry(mol)
     print("SCF Energy: ", pk.energy())
     print("HOMO: ", pk.HOMO)
     print("LUMO: ", pk.LUMO)
+    print("Optimized SCF Energy: ", pk.optimize())
+    print("HOMO: ", pk.HOMO)
+    print("LUMO: ", pk.LUMO)
     
-    # SCF Energy:  -232.26253075623467
-    # HOMO:  -0.2529008246007736
-    # LUMO:  -0.006506665366600545
+    # SCF Energy:  -230.71227964886216
+    # HOMO:  -0.3284856200909327
+    # LUMO:  0.14565152225066552
+    # Optimizer: Optimization complete!
+    # Optimized SCF Energy:  -230.7135235420281
+    # HOMO:  -0.3306834797644457
+    # LUMO:  0.14908632271767028
