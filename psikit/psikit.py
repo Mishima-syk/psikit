@@ -2,7 +2,7 @@
 import rdkit
 from rdkit import Chem
 from rdkit.Chem import AllChem
-
+import numpy as np
 
 class Psikit(object):
     def __init__(self, threads=2, memory=4):
@@ -35,6 +35,15 @@ class Psikit(object):
         self.wfn = wfn
         return scf_energy
 
+    def get_dipolemoment(self, basis_sets="scf/6-31g**", return_wfn=True):
+        #  The three components of the SCF dipole [Debye]
+        scf_energy, wfn = self.psi4.energy(basis_sets, return_wfn=return_wfn)
+        x = self.psi4.get_variable('SCF DIPOLE X')
+        y = self.psi4.get_variable('SCF DIPOLE Y')
+        z = self.psi4.get_variable('SCF DIPOLE Z')
+        total = np.sqrt(x * x + y * y + z * z)
+        return (x, y, z, total)
+
     @property
     def HOMO(self):
         return self.wfn.epsilon_a_subset('AO', 'ALL').np[self.wfn.nalpha()-1]
@@ -42,6 +51,7 @@ class Psikit(object):
     @property
     def LUMO(self):
         return self.wfn.epsilon_a_subset('AO', 'ALL').np[self.wfn.nalpha()]
+
 
 
 def mol2xyz(mol):

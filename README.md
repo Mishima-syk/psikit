@@ -16,7 +16,9 @@ from [Calculate HOMO and LUMO with Psi4](https://iwatobipen.wordpress.com/2018/0
     print("Optimized SCF Energy: ", pk.optimize())
     print("HOMO: ", pk.HOMO)
     print("LUMO: ", pk.LUMO)
-    
+    x, y, z, total = pk.get_dipolemoment()
+    print("SCF Total Dipole Moment: {}".format(total))
+
     # SCF Energy:  -230.71227964886216
     # HOMO:  -0.3284856200909327
     # LUMO:  0.14565152225066552
@@ -24,3 +26,4 @@ from [Calculate HOMO and LUMO with Psi4](https://iwatobipen.wordpress.com/2018/0
     # Optimized SCF Energy:  -230.7135235420281
     # HOMO:  -0.3306834797644457
     # LUMO:  0.14908632271767028
+    # SCF Total Dipole Moment: 3.292465110164062e-05
