@@ -35,9 +35,9 @@ class Psikit(object):
         self.wfn = wfn
         return scf_energy
 
-    def get_dipolemoment(self, basis_sets="scf/6-31g**", return_wfn=True):
+    @property
+    def dipolemoment(self, basis_sets="scf/6-31g**", return_wfn=True):
         #  The three components of the SCF dipole [Debye]
-        scf_energy, wfn = self.psi4.energy(basis_sets, return_wfn=return_wfn)
         x = self.psi4.get_variable('SCF DIPOLE X')
         y = self.psi4.get_variable('SCF DIPOLE Y')
         z = self.psi4.get_variable('SCF DIPOLE Z')
