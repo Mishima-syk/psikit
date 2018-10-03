@@ -1,5 +1,12 @@
 from [Calculate HOMO and LUMO with Psi4](https://iwatobipen.wordpress.com/2018/08/24/calculate-homo-and-lumo-with-psi4-rdkit-psi4/)
 
+# Install RDKit and Psi4 from Conda
+
+    conda install -c psi4 psi4
+    conda install -c rdkit rdkit
+
+That's it.
+
 # Usage
 
     from psikit import Psikit
