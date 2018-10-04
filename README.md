@@ -16,7 +16,7 @@ That's it.
     pk = Psikit()
     mol = Chem.MolFromSmiles("c1ccccc1")
     mol = pk.rdkit_optimize(mol)
-    pk.geometry(mol)
+    psi4mol = pk.geometry(mol)
     print("SCF Energy: ", pk.energy())
     print("HOMO: ", pk.HOMO)
     print("LUMO: ", pk.LUMO)
@@ -27,6 +27,8 @@ That's it.
     print("LUMO: ", pk.LUMO)
     x, y, z, total = pk.dipolemoment
     print("SCF Total Dipole Moment: {}".format(total))
+    # Before run following command, user need to optimizer molecule.
+    optimizedmol = pk.xyz2mol()
 
     # SCF Energy:  -230.71227964886188
     # HOMO:  -0.3284856200909428
