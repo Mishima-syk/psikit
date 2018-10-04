@@ -43,7 +43,7 @@ class Psikit(object):
 
     def xyz2mol(self, confId=0):
         if self.is_optimized == False:
-            print('Do optimze at first!')
+            print('Do optimize at first!')
         else:
             natom = self.psi4mol.natom()
             mol_array = self.psi4mol.geometry().to_array()
