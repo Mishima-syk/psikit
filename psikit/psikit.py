@@ -26,7 +26,7 @@ class Psikit(object):
 
     def geometry(self, mol):
         if type(mol) == rdkit.Chem.rdchem.Mol:
-            xyz = mol2xyz(mol)
+            xyz = self.mol2xyz(mol)
         self.psi4mol = self.psi4.geometry(xyz)
         return self.psi4mol
 
@@ -40,6 +40,14 @@ class Psikit(object):
         self.wfn = wfn
         self.is_optimized = True
         return scf_energy
+
+    def mol2xyz(self, mol):
+        xyz_string = "\n"
+        for _, atom in enumerate(mol.GetAtoms()):
+            pos = mol.GetConformer().GetAtomPosition(atom.GetIdx())
+            xyz_string += "{} {} {} {}\n".format(atom.GetSymbol(), pos.x, pos.y, pos.z)
+        xyz_string += "units angstrom\n"
+        return xyz_string
 
     def xyz2mol(self, confId=0):
         if self.is_optimized == False:
@@ -69,14 +77,4 @@ class Psikit(object):
     @property
     def LUMO(self):
         return self.wfn.epsilon_a_subset('AO', 'ALL').np[self.wfn.nalpha()]
-
-
-
-def mol2xyz(mol):
-    xyz_string = "\n"
-    for _, atom in enumerate(mol.GetAtoms()):
-        pos = mol.GetConformer().GetAtomPosition(atom.GetIdx())
-        xyz_string += "{} {} {} {}\n".format(atom.GetSymbol(), pos.x, pos.y, pos.z)
-    xyz_string += "units angstrom\n"
-    return xyz_string
 
