@@ -14,40 +14,32 @@ That's it.
 ### Single point calcuration
 
     from psikit import Psikit
-    from rdkit import Chem
-    from rdkit.Chem import AllChem
         
     pk = Psikit()
-    mol = Chem.MolFromSmiles("c1ccccc1")
-    mol = pk.rdkit_optimize(mol)
-    psi4mol = pk.geometry(mol)
+    pk.read_from_smiles("c1ccccc1")
     print("SCF Energy: ", pk.energy())
     print("HOMO: ", pk.HOMO)
     print("LUMO: ", pk.LUMO)
     x, y, z, total = pk.dipolemoment
     print("SCF Total Dipole Moment: {}".format(total))
-    # SCF Energy:  -230.71227964886188
-    # HOMO:  -0.3284856200909428
-    # LUMO:  0.14565152225064903
-    # SCF Total Dipole Moment: 3.292464935735843e-05
+    
+    # SCF Energy:  -230.712279648862
+    # HOMO:  -0.32848562009092513
+    # LUMO:  0.1456515222506689
+    # SCF Total Dipole Moment: 3.292464934070545e-05
 
 ### Structure optimization
 
     pk = Psikit()
-    mol = Chem.MolFromSmiles("c1ccccc1")
-    mol = pk.rdkit_optimize(mol)
-    psi4mol = pk.geometry(mol)
+    pk.read_from_smiles("c1ccccc1")
     print("Optimized SCF Energy: ", pk.optimize())
     print("HOMO: ", pk.HOMO)
     print("LUMO: ", pk.LUMO)
     x, y, z, total = pk.dipolemoment
     print("SCF Total Dipole Moment: {}".format(total))
 
-    # Before run following command, user need to run 'optimize molecule'.
-    optimizedmol = pk.xyz2mol()
-
     # Optimizer: Optimization complete!
-    # Optimized SCF Energy:  -230.71352354208835
-    # HOMO:  -0.33068347419415384
-    # LUMO:  0.1490863128964776
-    # SCF Total Dipole Moment: 2.5269468477613993e-05
+    # Optimized SCF Energy:  -230.71352354223438
+    # HOMO:  -0.3306834775917495
+    # LUMO:  0.14908631857977886
+    # SCF Total Dipole Moment: 2.527398024898661e-05
