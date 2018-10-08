@@ -13,7 +13,6 @@ class Psikit(object):
         self.psi4.set_num_threads(threads)
         self.wfn = None
         self.mol = None
-        self.psi4mol = None
 
     def read_from_smiles(self, smiles_str, opt=True):
         self.mol = Chem.MolFromSmiles("c1ccccc1")
@@ -28,7 +27,7 @@ class Psikit(object):
 
     def geometry(self):
         xyz = self.mol2xyz()
-        self.psi4mol = self.psi4.geometry(xyz)
+        self.psi4.geometry(xyz)
 
     def energy(self, basis_sets= "scf/6-31g**", return_wfn=True):
         self.geometry()
@@ -52,8 +51,8 @@ class Psikit(object):
         return xyz_string
 
     def xyz2mol(self, confId=0):
-        natom = self.psi4mol.natom()
-        mol_array = self.psi4mol.geometry().to_array()
+        natom = self.wfn.molecule().natom()
+        mol_array = self.wfn.molecule().geometry().to_array()
         nmol = Chem.Mol(self.mol)
         conf = nmol.GetConformer(confId)
         for i in range(natom):
