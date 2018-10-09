@@ -14,7 +14,7 @@ That's it.
 ### Single point calcuration
 
     from psikit import Psikit
-        
+    
     pk = Psikit()
     pk.read_from_smiles("c1ccccc1")
     print("SCF Energy: ", pk.energy())
