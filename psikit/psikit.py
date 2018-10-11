@@ -15,7 +15,7 @@ class Psikit(object):
         self.mol = None
 
     def read_from_smiles(self, smiles_str, opt=True):
-        self.mol = Chem.MolFromSmiles("c1ccccc1")
+        self.mol = Chem.MolFromSmiles(smiles_str)
         if opt:
             self.rdkit_optimize()   
 
