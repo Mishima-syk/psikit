@@ -7,7 +7,13 @@ Inspired from this blog entry [Calculate HOMO and LUMO with Psi4](https://iwatob
     conda install -c psi4 psi4
     conda install -c rdkit rdkit
 
-That's it.
+## Install Psikit from Github
+
+Psikit is now under development version.
+We haven't uploaded psikit to PyPI yet, so plz install from github.
+
+    pip install git+https://github.com/Mishima-syk/psikit
+
 
 ## Usage
 
