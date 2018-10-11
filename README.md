@@ -9,7 +9,7 @@ Inspired from this blog entry [Calculate HOMO and LUMO with Psi4](https://iwatob
 
 ## Install Psikit from Github
 
-Psikit is now under development version.
+Psikit is under development.
 We haven't uploaded psikit to PyPI yet, so plz install from github.
 
     pip install git+https://github.com/Mishima-syk/psikit
