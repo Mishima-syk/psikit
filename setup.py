@@ -13,6 +13,6 @@ setup(name='Psikit',
       author_email='kerolinq@gmail.com, ######',
       url='https://github.com/Mishima-syk/psikit',
       packages=['psikit'],
-      install_requires=['rdkit','psi4',],
+      install_requires=[],
       license='MIT',
      )
