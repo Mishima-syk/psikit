@@ -60,8 +60,7 @@ class Psikit(object):
         return nmol
     
     def clone_mol(self):
-        # is this need?
-        pass
+        return Chem.Mol(self.mol)
 
     @property
     def dipolemoment(self, basis_sets="scf/6-31g**", return_wfn=True):
