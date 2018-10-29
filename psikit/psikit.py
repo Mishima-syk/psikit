@@ -16,7 +16,7 @@ class Psikit(object):
         self.mol = None
 
     def read_from_smiles(self, smiles_str, opt=True):
-        self.mol = Chem.MolFromSmiles("c1ccccc1")
+        self.mol = Chem.MolFromSmiles(smiles_str)
         if opt:
             self.rdkit_optimize()   
 
@@ -61,8 +61,7 @@ class Psikit(object):
         return nmol
     
     def clone_mol(self):
-        # is this need?
-        pass
+        return Chem.Mol(self.mol)
 
     @property
     def dipolemoment(self, basis_sets="scf/6-31g**", return_wfn=True):
