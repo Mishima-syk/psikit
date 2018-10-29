@@ -10,6 +10,7 @@ class Psikit(object):
         self.psi4 = psi4
         self.psi4.core.set_output_file("psikit_out.dat", True)
         self.psi4.set_memory("{} GB".format(memory))
+        self.psi4.set_option({"save_jk": True})  # for JK calculation
         self.psi4.set_num_threads(threads)
         self.wfn = None
         self.mol = None
@@ -79,4 +80,13 @@ class Psikit(object):
     @property
     def LUMO(self):
         return self.wfn.epsilon_a_subset('AO', 'ALL').np[self.wfn.nalpha()]
+
+    @property
+    def coulomb_matrix(self):
+        return self.wfn.jk().J[0].to_array()
+
+    @property
+    def exchange_matrix(self):
+        return self.wfn.jk().K[0].to_array()
+
 
