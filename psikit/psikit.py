@@ -5,15 +5,16 @@ from rdkit.Chem import AllChem
 import numpy as np
 
 class Psikit(object):
-    def __init__(self, threads=2, memory=4):
+    def __init__(self, threads=4, memory=4):
         import psi4
         self.psi4 = psi4
         self.psi4.core.set_output_file("psikit_out.dat", True)
         self.psi4.set_memory("{} GB".format(memory))
-        self.psi4.set_option({"save_jk": True})  # for JK calculation
+        #self.psi4.set_options({"save_jk": True})  # for JK calculation
         self.psi4.set_num_threads(threads)
         self.wfn = None
         self.mol = None
+        self.psi4.core.initialize()
 
     def read_from_smiles(self, smiles_str, opt=True):
         self.mol = Chem.MolFromSmiles(smiles_str)
@@ -59,9 +60,38 @@ class Psikit(object):
         for i in range(natom):
             conf.SetAtomPosition(i, tuple(mol_array[i]))
         return nmol
+
     
     def clone_mol(self):
         return Chem.Mol(self.mol)
+
+    @property
+    def resp_charge(self):
+        if self.wfn.molecule() == None:
+            print('please run optimze() at first!')
+            return None
+        try:
+            import resp
+        except:
+            print('please install resp at first')
+            print('conda install -c psi4 resp')
+            return None
+        # https://www.cgl.ucsf.edu/chimerax/docs/user/radii.html
+        options = {'N_VDW_LAYERS'       : 4,
+                   'VDW_SCALE_FACTOR'   : 1.4,
+                   'VDW_INCREMENT'      : 0.2,
+                   'VDW_POINT_DENSITY'  : 1.0,
+                   'resp_a'             : 0.0005,
+                   'RESP_B'             : 0.1,
+                   'RADIUS'             : {'Br':1.98, 'I':2.09, }
+                   }
+        charges = resp.resp([self.wfn.molecule()], [options])
+        atoms = self.mol.GetAtoms()
+        for idx, atom in enumerate(atoms):
+            atom.SetProp("EP_C", charges[0][0][i])
+            atom.SetProp("RESP_C", charges[0][1][i])
+        return { 'Electrostatic Potential Charges':charges[0][0], 
+                 'Restrained Electrostatic Potential Charges':charges[0][1]}
 
     @property
     def dipolemoment(self, basis_sets="scf/6-31g**", return_wfn=True):
