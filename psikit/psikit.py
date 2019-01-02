@@ -88,8 +88,8 @@ class Psikit(object):
         charges = resp.resp([self.wfn.molecule()], [options])
         atoms = self.mol.GetAtoms()
         for idx, atom in enumerate(atoms):
-            atom.SetProp("EP_C", charges[0][0][i])
-            atom.SetProp("RESP_C", charges[0][1][i])
+            atom.SetProp("EP_C", charges[0][0][idx])
+            atom.SetProp("RESP_C", charges[0][1][idx])
         return { 'Electrostatic Potential Charges':charges[0][0], 
                  'Restrained Electrostatic Potential Charges':charges[0][1]}
 
