@@ -2,3 +2,4 @@ __pycache__
 *.pyc
 *.dat
 *.clean
+.DS_Store
