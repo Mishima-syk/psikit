@@ -65,6 +65,20 @@ class Psikit(object):
     def clone_mol(self):
         return Chem.Mol(self.mol)
 
+    def getMOview(self, gridspace=0.15):
+        if self.wfn == None:
+            print('please run optimze() at first!')
+            return None
+        else:
+            a = self.wfn.nalpha()  # HOMO
+            b = a + 1  # LUMO
+            self.psi4.set_options({"cubeprop_tasks":['orbitals'],
+                                   "cubeprop_orbitals":[a, b, -a, -b],
+                                   "cubic_grid_spacing":[gridspace, gridspace, gridspace]})
+            Chem.MolToMolFile(self.mol, 'target.mol')
+            self.psi4.cubeprop(self.wfn)
+            print('Done!')
+            
     @property
     def resp_charge(self):
         if self.wfn.molecule() == None:
