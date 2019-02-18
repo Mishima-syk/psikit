@@ -14,7 +14,6 @@ class Psikit(object):
         self.psi4.set_num_threads(threads)
         self.wfn = None
         self.mol = None
-        self.psi4.core.initialize()
 
     def read_from_smiles(self, smiles_str, opt=True):
         self.mol = Chem.MolFromSmiles(smiles_str)
