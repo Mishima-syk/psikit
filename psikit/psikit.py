@@ -14,7 +14,7 @@ class Psikit(object):
         self.psi4.set_num_threads(threads)
         self.wfn = None
         self.mol = None
-        self.psi4.core.initialize()
+        #self.psi4.core.initialize()
 
     def read_from_smiles(self, smiles_str, opt=True):
         self.mol = Chem.MolFromSmiles(smiles_str)
@@ -44,6 +44,9 @@ class Psikit(object):
         self.mol = self.xyz2mol()
         return scf_energy
 
+    def set_option(self, **kwargs):
+        self.psi4(**kwargs)
+
     def mol2xyz(self):
         xyz_string = "\n"
         for _, atom in enumerate(self.mol.GetAtoms()):
@@ -54,7 +57,8 @@ class Psikit(object):
 
     def xyz2mol(self, confId=0):
         natom = self.wfn.molecule().natom()
-        mol_array = self.wfn.molecule().geometry().to_array()
+        mol_array_bohr = self.wfn.molecule().geometry().to_array()
+        mol_array = mol_array_bohr * 0.52917721092
         nmol = Chem.Mol(self.mol)
         conf = nmol.GetConformer(confId)
         for i in range(natom):
