@@ -43,8 +43,14 @@ class Psikit(object):
         self.mol = self.xyz2mol()
         return scf_energy
 
-    def set_option(self, **kwargs):
-        self.psi4(**kwargs)
+    def set_options(self, **kwargs):
+        """
+        http://www.psicode.org/psi4manual/1.2/psiapi.html
+        IV. Analysis of Intermolecular Interactions
+        and 
+        http://forum.psicode.org/t/how-can-i-change-max-iteration-in-energy-method/1238/2
+        """
+        self.psi4.set_options(**kwargs)
 
     def mol2xyz(self):
         xyz_string = "\n"
