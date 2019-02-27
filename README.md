@@ -6,6 +6,7 @@ Inspired from this blog entry [Calculate HOMO and LUMO with Psi4](https://iwatob
 
     conda install -c psi4 psi4
     conda install -c rdkit rdkit
+    conda install -c psi4 resp # optional
 
 ## Install Psikit from Github
 
@@ -53,10 +54,9 @@ We haven't uploaded psikit to PyPI yet, so plz install from github.
 ### Calculate RESP Charge
 
     # REF http://ambermd.org/tutorials/advanced/tutorial1/files/resp_paper_jacs.pdf
-    pk = Psikit() 
-    pk.read_from_smiles("CC(=O)O")                            
-    # Psi4 already initialized.
-    pk.optimize()                                                                                    
+    pk = Psikit()
+    pk.read_from_smiles("CC(=O)O")
+    pk.optimize()
     # Optimizer: Optimization complete!
     # -227.82180859253418
     pk.resp_charge
