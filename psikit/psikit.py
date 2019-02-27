@@ -87,7 +87,11 @@ class Psikit(object):
             Chem.MolToMolFile(self.mol, 'target.mol')
             self.psi4.cubeprop(self.wfn)
             print('Done!')
-            
+
+    def save_fchk(self, filename="output.fchk"):
+        fchk_writer = self.psi4.core.FCHKWriter(self.wfn)
+        fchk_writer.write(filename)
+
     @property
     def resp_charge(self):
         if self.wfn.molecule() == None:
