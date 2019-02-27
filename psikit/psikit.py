@@ -92,6 +92,9 @@ class Psikit(object):
         fchk_writer = self.psi4.core.FCHKWriter(self.wfn)
         fchk_writer.write(filename)
 
+    def save_cube(self):
+        self.psi4.cubeprop(self.wfn)
+
     @property
     def resp_charge(self):
         if self.wfn.molecule() == None:
