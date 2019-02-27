@@ -3,3 +3,4 @@ __pycache__
 *.dat
 *.clean
 .DS_Store
+build
