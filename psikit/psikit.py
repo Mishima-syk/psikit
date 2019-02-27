@@ -53,7 +53,7 @@ class Psikit(object):
         self.psi4.set_options(**kwargs)
 
     def mol2xyz(self):
-        xyz_string = "{} 1\n".format(Chem.GetFormalCharge(self.mol))
+        xyz_string = "\n{} 1\n".format(Chem.GetFormalCharge(self.mol))
         for _, atom in enumerate(self.mol.GetAtoms()):
             pos = self.mol.GetConformer().GetAtomPosition(atom.GetIdx())
             xyz_string += "{} {} {} {}\n".format(atom.GetSymbol(), pos.x, pos.y, pos.z)
