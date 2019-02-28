@@ -41,6 +41,7 @@ class Psikit(object):
         scf_energy, wfn = self.psi4.optimize(basis_sets, return_wfn=return_wfn)
         self.wfn = wfn
         self.mol = self.xyz2mol()
+        self.psi4.core.opt_clean() # Seg fault will occured when the function is called before optimize.
         return scf_energy
 
     def set_options(self, **kwargs):
@@ -118,8 +119,8 @@ class Psikit(object):
         charges = resp.resp([self.wfn.molecule()], [options])
         atoms = self.mol.GetAtoms()
         for idx, atom in enumerate(atoms):
-            atom.SetProp("EP_C", str(charges[0][0][idx]))
-            atom.SetProp("RESP_C", str(charges[0][1][idx]))
+            atom.SetProp("EP", str(charges[0][0][idx]))
+            atom.SetProp("RESP", str(charges[0][1][idx]))
         return { 'Electrostatic Potential Charges':charges[0][0], 
                  'Restrained Electrostatic Potential Charges':charges[0][1]}
 
