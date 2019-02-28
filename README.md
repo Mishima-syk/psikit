@@ -76,3 +76,9 @@ We haven't uploaded psikit to PyPI yet, so plz install from github.
     # H ESP_0.15316056312500753, RESP_0.10522698717266236
     # H ESP_0.15374240384517748, RESP_0.1056556503974483
     # H ESP_0.4529084887436992, RESP_0.4553945311928933
+
+### Jupyter notebook
+
+- [RESP charge](examples/Rendering_RESP_charge/RESP%20charge%20of%20the%20tetrazole.ipynb)
+- [Torsion Scan](examples/Torsion_scan/torsional_scan.ipynb)
+- [Rendering Orbital](examples/Rendering_Orbital/Render_orbital.ipynb)
