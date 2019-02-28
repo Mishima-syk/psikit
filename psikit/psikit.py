@@ -50,7 +50,7 @@ class Psikit(object):
         and 
         http://forum.psicode.org/t/how-can-i-change-max-iteration-in-energy-method/1238/2
         """
-        self.psi4.set_options(**kwargs)
+        self.psi4.set_options(kwargs)
 
     def mol2xyz(self):
         xyz_string = "\n{} 1\n".format(Chem.GetFormalCharge(self.mol))
