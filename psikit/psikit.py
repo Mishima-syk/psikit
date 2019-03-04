@@ -55,7 +55,7 @@ class Psikit(object):
 
     def mol2xyz(self):
         xyz_string = "\n{} 1\n".format(Chem.GetFormalCharge(self.mol))
-        for _, atom in enumerate(self.mol.GetAtoms()):
+        for atom in self.mol.GetAtoms():
             pos = self.mol.GetConformer().GetAtomPosition(atom.GetIdx())
             xyz_string += "{} {} {} {}\n".format(atom.GetSymbol(), pos.x, pos.y, pos.z)
         xyz_string += "units angstrom\n"
