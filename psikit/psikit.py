@@ -124,6 +124,36 @@ class Psikit(object):
         return { 'Electrostatic Potential Charges':charges[0][0], 
                  'Restrained Electrostatic Potential Charges':charges[0][1]}
 
+
+    @property
+    def mulliken_charges(self):
+        '''
+        Compute Mulliken Charges
+        And return the results as numpy array.
+        '''
+        if self.wfn.molecule() == None:
+            print('please run optimze() at first!')
+            return None
+        self.psi4.oeprop(self.wfn, 'MULLIKEN_CHARGES')
+        mulliken_acp = self.wfn.atomic_point_charges()
+        return mulliken_acp.np
+
+    @property
+    def lowdin_charges(self):
+        '''
+        Compute Lowdin Charges
+        And return the results as numpy array.
+        '''
+        if self.wfn.molecule() == None:
+            print('please run optimze() at first!')
+            return None
+        self.psi4.oeprop(self.wfn, 'LOWDIN_CHARGES')
+        lowdin_acp = self.wfn.atomic_point_charges()
+        return lowdin_acp.np
+
+
+
+
     @property
     def dipolemoment(self, basis_sets="scf/6-31g**", return_wfn=True):
         #  The three components of the SCF dipole [Debye]

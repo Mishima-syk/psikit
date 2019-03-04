@@ -69,6 +69,20 @@ We haven't uploaded psikit to PyPI yet, so plz install from github.
     # H ESP:0.15374240384517748 RESP:0.1056556503974483
     # H ESP:0.4529084887436992  RESP:0.4553945311928933
 
+### Compute Mulliken charges and Lowdin charges
+
+    pk = Psikit()
+    pk.read_from_smiles("c1ccccc1")
+    pk.optimize() # or pk.energy()
+    pk.mulliken_charges
+    array([-0.14772516, -0.14772517, -0.14772516, -0.14772516, -0.14772517,
+           -0.14772516,  0.14772516,  0.14772516,  0.14772516,  0.14772516,
+           0.14772516,  0.14772517])
+    pk.lowdin_charges
+    array([-0.10565662, -0.11135779, -0.10784152, -0.10565662, -0.11135779,
+           -0.10784153,  0.10586262,  0.1112327 ,  0.10776061,  0.10586262,
+            0.1112327 ,  0.10776062])
+ 
 ### Jupyter notebook
 
 - [RESP charge](examples/Rendering_RESP_charge/RESP%20charge%20of%20the%20tetrazole.ipynb)
