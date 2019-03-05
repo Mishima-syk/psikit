@@ -3,17 +3,23 @@ import rdkit
 from rdkit import Chem
 from rdkit.Chem import AllChem
 import numpy as np
+import os
+import uuid
 
 class Psikit(object):
-    def __init__(self, threads=4, memory=4):
+    def __init__(self, threads=4, memory=4, debug=False):
         import psi4
         self.psi4 = psi4
-        self.psi4.core.set_output_file("psikit_out.dat", True)
         self.psi4.set_memory("{} GB".format(memory))
         #self.psi4.set_options({"save_jk": True})  # for JK calculation
         self.psi4.set_num_threads(threads)
         self.wfn = None
         self.mol = None
+        self.debug = debug
+        if self.debug:
+            self.psi4.core.set_output_file("psikit_out.dat", True)
+        else:
+            self.psi4.core.be_quiet()
 
     def read_from_smiles(self, smiles_str, opt=True):
         self.mol = Chem.MolFromSmiles(smiles_str)
@@ -33,15 +39,18 @@ class Psikit(object):
     def energy(self, basis_sets= "scf/6-31g**", return_wfn=True):
         self.geometry()
         scf_energy, wfn = self.psi4.energy(basis_sets, return_wfn=return_wfn)
+        self.psi4.core.clean()
         self.wfn = wfn
         return scf_energy
 
-    def optimize(self, basis_sets= "scf/6-31g**", return_wfn=True):
+    def optimize(self, basis_sets= "scf/6-31g**", return_wfn=True, name=uuid.uuid4().hex):
+        self.psi4.core.IO.set_default_namespace(name)
         self.geometry()
         scf_energy, wfn = self.psi4.optimize(basis_sets, return_wfn=return_wfn)
         self.wfn = wfn
         self.mol = self.xyz2mol()
-        self.psi4.core.opt_clean() # Seg fault will occured when the function is called before optimize.
+        if not self.debug:
+            self.psi4.core.opt_clean() # Seg fault will occured when the function is called before optimize.
         return scf_energy
 
     def set_options(self, **kwargs):
