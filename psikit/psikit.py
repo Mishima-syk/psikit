@@ -43,7 +43,9 @@ class Psikit(object):
         self.wfn = wfn
         return scf_energy
 
-    def optimize(self, basis_sets= "scf/6-31g**", return_wfn=True, name=uuid.uuid4().hex):
+    def optimize(self, basis_sets= "scf/6-31g**", return_wfn=True, name=None):
+        if not name:
+            name = uuid.uuid4().hex
         self.psi4.core.IO.set_default_namespace(name)
         self.geometry()
         scf_energy, wfn = self.psi4.optimize(basis_sets, return_wfn=return_wfn)
