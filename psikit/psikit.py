@@ -108,7 +108,7 @@ class Psikit(object):
         self.psi4.cubeprop(self.wfn)
 
     @property
-    def resp_charge(self):
+    def resp_charges(self):
         if self.wfn.molecule() == None:
             print('please run optimze() at first!')
             return None
@@ -130,11 +130,9 @@ class Psikit(object):
         charges = resp.resp([self.wfn.molecule()], [options])
         atoms = self.mol.GetAtoms()
         for idx, atom in enumerate(atoms):
-            atom.SetProp("EP", str(charges[0][0][idx]))
-            atom.SetProp("RESP", str(charges[0][1][idx]))
-        return { 'Electrostatic Potential Charges':charges[0][0], 
-                 'Restrained Electrostatic Potential Charges':charges[0][1]}
-
+            atom.SetDoubleProp("EP", charges[0][0][idx])
+            atom.SetDoubleProp("RESP", charges[0][1][idx])
+        return charges[0][1]
 
     @property
     def mulliken_charges(self):
@@ -147,6 +145,9 @@ class Psikit(object):
             return None
         self.psi4.oeprop(self.wfn, 'MULLIKEN_CHARGES')
         mulliken_acp = self.wfn.atomic_point_charges()
+        atoms = self.mol.GetAtoms()
+        for idx, atom in enumerate(atoms):
+            atom.SetDoubleProp("MULLIKEN", mulliken_acp.np[idx])
         return mulliken_acp.np
 
     @property
@@ -160,6 +161,9 @@ class Psikit(object):
             return None
         self.psi4.oeprop(self.wfn, 'LOWDIN_CHARGES')
         lowdin_acp = self.wfn.atomic_point_charges()
+        atoms = self.mol.GetAtoms()
+        for idx, atom in enumerate(atoms):
+            atom.SetDoubleProp("LOWDIN", lowdin_acp.np[idx])
         return lowdin_acp.np
 
 
