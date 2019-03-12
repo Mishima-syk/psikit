@@ -107,8 +107,7 @@ class Psikit(object):
     def save_cube(self):
         self.psi4.cubeprop(self.wfn)
 
-    @property
-    def resp_charges(self):
+    def calc_resp_charges(self):
         if self.wfn.molecule() == None:
             print('please run optimze() at first!')
             return None
@@ -134,8 +133,7 @@ class Psikit(object):
             atom.SetDoubleProp("RESP", charges[0][1][idx])
         return charges[0][1]
 
-    @property
-    def mulliken_charges(self):
+    def calc_mulliken_charges(self):
         '''
         Compute Mulliken Charges
         And return the results as numpy array.
@@ -150,8 +148,7 @@ class Psikit(object):
             atom.SetDoubleProp("MULLIKEN", mulliken_acp.np[idx])
         return mulliken_acp.np
 
-    @property
-    def lowdin_charges(self):
+    def calc_lowdin_charges(self):
         '''
         Compute Lowdin Charges
         And return the results as numpy array.
@@ -165,8 +162,6 @@ class Psikit(object):
         for idx, atom in enumerate(atoms):
             atom.SetDoubleProp("LOWDIN", lowdin_acp.np[idx])
         return lowdin_acp.np
-
-
 
 
     @property
