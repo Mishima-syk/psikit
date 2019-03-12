@@ -51,37 +51,37 @@ We haven't uploaded psikit to PyPI yet, so plz install from github.
     pk.optimize()
     # Optimizer: Optimization complete!
     # -227.82180859253418
-    pk.resp_charge
-    # {'Electrostatic Potential Charges': array([-0.48689846,  0.89569528, -0.62426239, -0.67814945,  0.13380356,
-    #    0.15316056,  0.1537424 ,  0.45290849]),
-    # 'Restrained Electrostatic Potential Charges':
-    #  array([-0.29156449,  0.81676972, -0.60648253, -0.66743813,  0.08243827, 0.10522699,  0.10565565,  0.45539453])}
-    # pk.resp_charge method binds ESP and RESP charge to pk.mol object.
+    pk.calc_resp_charges()
+    # array([-0.32506898,  0.83672649, -0.61924915, -0.66135715,  0.10450057,
+    #    0.10478188,  0.10780051,  0.45186584])
 
     for atom in pk.mol.GetAtoms(): 
         print(atom.GetSymbol(), "ESP:{}\tRESP:{}".format(atom.GetProp("EP"), atom.GetProp("RESP"))) 
-    # C ESP:-0.48689845769479134    RESP:-0.29156449271229395
-    # C ESP:0.8956952830247616  RESP:0.8167697222722353
-    # O ESP:-0.6242623921340723 RESP:-0.6064825335690213
-    # O ESP:-0.6781494526425089 RESP:-0.6674381342538175
-    # H ESP:0.1338035637327267  RESP:0.08243826949989345
-    # H ESP:0.15316056312500753 RESP:0.10522698717266236
-    # H ESP:0.15374240384517748 RESP:0.1056556503974483
-    # H ESP:0.4529084887436992  RESP:0.4553945311928933
 
-### Compute Mulliken charges and Lowdin charges
+    # C ESP:-0.49662019588648315	RESP:-0.3250689814483399
+    # C ESP:0.91473263536048643		RESP:0.83672648554100837
+    # O ESP:-0.63823808477114718	RESP:-0.61924915363703359
+    # O ESP:-0.6763331997116846		RESP:-0.66135714989354499
+    # H ESP:0.14625849864628995		RESP:0.10450056830656008
+    # H ESP:0.14578513969681847		RESP:0.10478187811883517
+    # H ESP:0.1530843954112609		RESP:0.1078005104750676
+    # H ESP:0.45133081125445906		RESP:0.45186584253744722
+
+
+
+    ### Compute Mulliken charges and Lowdin charges
 
     pk = Psikit()
-    pk.read_from_smiles("c1ccccc1")
+    pk.read_from_smiles("CC(=O)O")
     pk.optimize() # or pk.energy()
-    pk.mulliken_charges
-    array([-0.14772516, -0.14772517, -0.14772516, -0.14772516, -0.14772517,
-           -0.14772516,  0.14772516,  0.14772516,  0.14772516,  0.14772516,
-           0.14772516,  0.14772517])
-    pk.lowdin_charges
-    array([-0.10565662, -0.11135779, -0.10784152, -0.10565662, -0.11135779,
-           -0.10784153,  0.10586262,  0.1112327 ,  0.10776061,  0.10586262,
-            0.1112327 ,  0.10776062])
+    pk.calc_mulliken_charges()
+    # array([-0.42203029,  0.72794785, -0.55419051, -0.59333358,  0.16369722,
+    #    0.1636994 ,  0.15462075,  0.35958916])
+
+    pk.calc_lowdin_charges()
+    #array([-0.30006577,  0.33900448, -0.35983788, -0.28463832,  0.12439944,
+    #    0.12810672,  0.11935266,  0.23367866])
+
  
 ### Jupyter notebook
 
