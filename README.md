@@ -74,6 +74,7 @@ We haven't uploaded psikit to PyPI yet, so plz install from github.
     pk = Psikit()
     pk.read_from_smiles("CC(=O)O")
     pk.optimize() # or pk.energy()
+
     pk.calc_mulliken_charges()
     # array([-0.42203029,  0.72794785, -0.55419051, -0.59333358,  0.16369722,
     #    0.1636994 ,  0.15462075,  0.35958916])
