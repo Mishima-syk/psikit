@@ -1,6 +1,6 @@
 # Psikit: a thin wrapper library for Psi4 and RDKit
 
-Inspired from this blog entry [Calculate HOMO and LUMO with Psi4](https://iwatobipen.wordpress.com/2018/08/24/calculate-homo-and-lumo-with-psi4-rdkit-psi4/)
+Inspired from the entry:[Calculate HOMO and LUMO with Psi4](https://iwatobipen.wordpress.com/2018/08/24/calculate-homo-and-lumo-with-psi4-rdkit-psi4/)
 
 ## Install RDKit and Psi4 from Conda
 
