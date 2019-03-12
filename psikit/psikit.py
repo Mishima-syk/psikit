@@ -3,17 +3,23 @@ import rdkit
 from rdkit import Chem
 from rdkit.Chem import AllChem
 import numpy as np
+import os
+import uuid
 
 class Psikit(object):
-    def __init__(self, threads=4, memory=4):
+    def __init__(self, threads=4, memory=4, debug=False):
         import psi4
         self.psi4 = psi4
-        self.psi4.core.set_output_file("psikit_out.dat", True)
         self.psi4.set_memory("{} GB".format(memory))
         #self.psi4.set_options({"save_jk": True})  # for JK calculation
         self.psi4.set_num_threads(threads)
         self.wfn = None
         self.mol = None
+        self.debug = debug
+        if self.debug:
+            self.psi4.core.set_output_file("psikit_out.dat", True)
+        else:
+            self.psi4.core.be_quiet()
 
     def read_from_smiles(self, smiles_str, opt=True):
         self.mol = Chem.MolFromSmiles(smiles_str)
@@ -33,15 +39,20 @@ class Psikit(object):
     def energy(self, basis_sets= "scf/6-31g**", return_wfn=True):
         self.geometry()
         scf_energy, wfn = self.psi4.energy(basis_sets, return_wfn=return_wfn)
+        self.psi4.core.clean()
         self.wfn = wfn
         return scf_energy
 
-    def optimize(self, basis_sets= "scf/6-31g**", return_wfn=True):
+    def optimize(self, basis_sets= "scf/6-31g**", return_wfn=True, name=None):
+        if not name:
+            name = uuid.uuid4().hex
+        self.psi4.core.IO.set_default_namespace(name)
         self.geometry()
         scf_energy, wfn = self.psi4.optimize(basis_sets, return_wfn=return_wfn)
         self.wfn = wfn
         self.mol = self.xyz2mol()
-        self.psi4.core.opt_clean() # Seg fault will occured when the function is called before optimize.
+        if not self.debug:
+            self.psi4.core.opt_clean() # Seg fault will occured when the function is called before optimize.
         return scf_energy
 
     def set_options(self, **kwargs):
@@ -55,7 +66,7 @@ class Psikit(object):
 
     def mol2xyz(self):
         xyz_string = "\n{} 1\n".format(Chem.GetFormalCharge(self.mol))
-        for _, atom in enumerate(self.mol.GetAtoms()):
+        for atom in self.mol.GetAtoms():
             pos = self.mol.GetConformer().GetAtomPosition(atom.GetIdx())
             xyz_string += "{} {} {} {}\n".format(atom.GetSymbol(), pos.x, pos.y, pos.z)
         xyz_string += "units angstrom\n"
@@ -97,7 +108,7 @@ class Psikit(object):
         self.psi4.cubeprop(self.wfn)
 
     @property
-    def resp_charge(self):
+    def resp_charges(self):
         if self.wfn.molecule() == None:
             print('please run optimze() at first!')
             return None
@@ -119,10 +130,44 @@ class Psikit(object):
         charges = resp.resp([self.wfn.molecule()], [options])
         atoms = self.mol.GetAtoms()
         for idx, atom in enumerate(atoms):
-            atom.SetProp("EP", str(charges[0][0][idx]))
-            atom.SetProp("RESP", str(charges[0][1][idx]))
-        return { 'Electrostatic Potential Charges':charges[0][0], 
-                 'Restrained Electrostatic Potential Charges':charges[0][1]}
+            atom.SetDoubleProp("EP", charges[0][0][idx])
+            atom.SetDoubleProp("RESP", charges[0][1][idx])
+        return charges[0][1]
+
+    @property
+    def mulliken_charges(self):
+        '''
+        Compute Mulliken Charges
+        And return the results as numpy array.
+        '''
+        if self.wfn.molecule() == None:
+            print('please run optimze() at first!')
+            return None
+        self.psi4.oeprop(self.wfn, 'MULLIKEN_CHARGES')
+        mulliken_acp = self.wfn.atomic_point_charges()
+        atoms = self.mol.GetAtoms()
+        for idx, atom in enumerate(atoms):
+            atom.SetDoubleProp("MULLIKEN", mulliken_acp.np[idx])
+        return mulliken_acp.np
+
+    @property
+    def lowdin_charges(self):
+        '''
+        Compute Lowdin Charges
+        And return the results as numpy array.
+        '''
+        if self.wfn.molecule() == None:
+            print('please run optimze() at first!')
+            return None
+        self.psi4.oeprop(self.wfn, 'LOWDIN_CHARGES')
+        lowdin_acp = self.wfn.atomic_point_charges()
+        atoms = self.mol.GetAtoms()
+        for idx, atom in enumerate(atoms):
+            atom.SetDoubleProp("LOWDIN", lowdin_acp.np[idx])
+        return lowdin_acp.np
+
+
+
 
     @property
     def dipolemoment(self, basis_sets="scf/6-31g**", return_wfn=True):
