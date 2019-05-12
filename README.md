@@ -88,7 +88,8 @@ We haven't uploaded psikit to PyPI yet, so plz install from github.
 
 - [RESP charge](examples/Rendering_RESP_charge/RESP%20charge%20of%20the%20tetrazole.ipynb)
 - [Torsion Scan](examples/Torsion_scan/torsional_scan.ipynb)
-- [Rendering Orbital](examples/Rendering_Orbital/Render_orbital.ipynb)
+- [Rendering Orbital wit VMD](examples/Rendering_Orbital/Render_orbital.ipynb)
+- [Rendering Orbital in PyMol](Rendering_Orbital_in_PyMol/Visualize_MO_in_PyMol.ipynb)
 - [Charge Comparison](examples/CHARGE_COMPARISON/charge_comparison.ipynb)
 
 ### License
