@@ -15,13 +15,11 @@ We haven't uploaded psikit to PyPI yet, so plz install from github.
 
     pip install git+https://github.com/Mishima-syk/psikit
 
-
 ## Usage
 
 ### Single point calcuration
 
     from psikit import Psikit
-    
     pk = Psikit()
     pk.read_from_smiles("c1ccccc1")
     print("SCF Energy: ", pk.energy())
@@ -29,7 +27,6 @@ We haven't uploaded psikit to PyPI yet, so plz install from github.
     print("LUMO: ", pk.LUMO)
     x, y, z, total = pk.dipolemoment
     print("SCF Total Dipole Moment: {}".format(total))
-    
     # SCF Energy:  -230.712279648862
     # HOMO:  -0.32848562009092513
     # LUMO:  0.1456515222506689
@@ -66,8 +63,6 @@ We haven't uploaded psikit to PyPI yet, so plz install from github.
     # H ESP:0.14578513969681847		RESP:0.10478187811883517
     # H ESP:0.1530843954112609		RESP:0.1078005104750676
     # H ESP:0.45133081125445906		RESP:0.45186584253744722
-
-
 
     ### Compute Mulliken charges and Lowdin charges
 

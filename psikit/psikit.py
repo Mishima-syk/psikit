@@ -26,6 +26,11 @@ class Psikit(object):
         if opt:
             self.rdkit_optimize()   
 
+    def read_from_molfile(self, molfile, opt=True, removeHs=False):
+        self.mol = Chem.MolFromMolFile(molfile, removeHs=removeHs)
+        if opt:
+            self.rdkit_optimize()   
+
     def rdkit_optimize(self, addHs=True):
         if addHs:
             self.mol = Chem.AddHs(self.mol)
