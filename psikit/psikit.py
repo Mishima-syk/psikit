@@ -99,6 +99,34 @@ class Psikit(object):
             Chem.MolToMolFile(self.mol, 'target.mol')
             self.psi4.cubeprop(self.wfn)
             print('Done!')
+    
+    def view_on_pymol(self):
+        '''
+        To use the function, user need to install pymol and run the pymol for server mode
+        The command is pymol -R
+        '''
+        import sys
+        import xmlrpc.client as xmlrpc
+        filepath = os.getcwd()
+        nalpha = self.wfn.nalpha()
+        srv = xmlrpc.ServerProxy('http://localhost:9123')
+        srv.do('delete *')
+        srv.do('load '+os.path.join(filepath, 'target.mol'))
+        srv.do('load '+os.path.join(filepath, f'Psi_a_{nalpha}_{nalpha}-A.cube'))
+        srv.do('load '+os.path.join(filepath, f'Psi_b_{nalpha}_{nalpha}-A.cube'))
+        srv.do('load '+os.path.join(filepath, f'Psi_a_{nalpha+1}_{nalpha+1}-A.cube'))
+        srv.do('load '+os.path.join(filepath, f'Psi_b_{nalpha+1}_{nalpha+1}-A.cube'))
+        srv.do(f'isomesh HOMO_A, Psi_a_{nalpha}_{nalpha}-A, -0.02')
+        srv.do(f'isomesh HOMO_B, Psi_b_{nalpha}_{nalpha}-A, 0.02')
+        srv.do(f'isomesh LUMO_A, Psi_a_{nalpha+1}_{nalpha+1}-A, -0.02')
+        srv.do(f'isomesh LUMO_B, Psi_b_{nalpha+1}_{nalpha+1}-A, 0.02')
+        srv.do('color blue, HOMO_A')
+        srv.do('color red, HOMO_B')
+        srv.do('color blue, LUMO_A')
+        srv.do('color red, LUMO_B')
+        outputpath = os.path.join(filepath, 'mo.pse')
+        srv.do(f'save {outputpath}')
+        print('finished !')
 
     def save_frontier(self, gridspace=0.15):
         if self.wfn == None:
