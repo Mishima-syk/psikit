@@ -48,14 +48,22 @@ class Psikit(object):
         self.wfn = wfn
         return scf_energy
 
-    def optimize(self, basis_sets= "scf/6-31g**", return_wfn=True, name=None):
+    def optimize(self, basis_sets= "scf/6-31g**", return_wfn=True, name=None, maxiter=50):
         if not name:
             name = uuid.uuid4().hex
         self.psi4.core.IO.set_default_namespace(name)
         self.geometry()
-        scf_energy, wfn = self.psi4.optimize(basis_sets, return_wfn=return_wfn)
-        self.wfn = wfn
+        self.psi4.set_options({'GEOM_MAXITER':maxiter})
+        try:
+            scf_energy, wfn = self.psi4.optimize(basis_sets, return_wfn=return_wfn)
+            self.wfn = wfn
+        except self.psi4.OptimizationConvergenceError as cError:
+            print('Convergence error caught: {0}'.format(cError))
+            self.wfn = cError.wfn
+            scf_energy = self.wfn.energy()
+            self.psi4.core.clean()
         self.mol = self.xyz2mol()
+
         if not self.debug:
             self.psi4.core.opt_clean() # Seg fault will occured when the function is called before optimize.
         return scf_energy
