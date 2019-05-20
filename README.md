@@ -11,9 +11,18 @@ Inspired from the entry:[Calculate HOMO and LUMO with Psi4](https://iwatobipen.w
 ## Install Psikit from Github
 
 Psikit is under development.
-We haven't uploaded psikit to PyPI yet, so plz install from github.
+Recent version of Psikit can install from github.
 
     pip install git+https://github.com/Mishima-syk/psikit
+
+## Install Psikit with pip
+
+Psikit is under development.
+But current version of Psikit can install from pypi or conda.
+
+    pip install psikit
+    conda install -c iwatobipen psikit
+
 
 ## Usage
 
