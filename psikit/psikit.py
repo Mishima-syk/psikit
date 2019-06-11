@@ -3,6 +3,7 @@ import rdkit
 from rdkit import Chem
 from rdkit.Chem import AllChem
 import numpy as np
+import glob
 import os
 import uuid
 
@@ -103,25 +104,28 @@ class Psikit(object):
     def clone_mol(self):
         return Chem.Mol(self.mol)
 
-    def getMOview(self, gridspace=0.15):
+    def getMOview(self, gridspace=0.3):
         if self.wfn == None:
             print('please run optimze()/energy() at first!')
             return None
         else:
             a = self.wfn.nalpha()  # HOMO
             b = a + 1  # LUMO
-            self.psi4.set_options({"cubeprop_tasks":['orbitals'],
-                                   "cubeprop_orbitals":[a, b, -a, -b],
+            self.psi4.set_options({"cubeprop_tasks":['ESP', 'FRONTIER_ORBITALS', 'Density', 'DUAL_DESCRIPTOR'],
                                    "cubic_grid_spacing":[gridspace, gridspace, gridspace]})
             Chem.MolToMolFile(self.mol, 'target.mol')
             self.psi4.cubeprop(self.wfn)
             print('Done!')
     
-    def view_on_pymol(self):
+    def view_on_pymol(self, target='FRONTIER', maprange=0.05):
         '''
         To use the function, user need to install pymol and run the pymol for server mode
         The command is pymol -R
+        target ['ESP', 'FRONTIER', 'DUAL']
         '''
+        targetlist = ['ESP', 'FRONTIER', 'DUAL']
+        if target not in targetlist:
+            raise Exception(f'Please set target from ESP, FRONTIER, DENSITY!!')
         import sys
         import xmlrpc.client as xmlrpc
         filepath = os.getcwd()
@@ -129,19 +133,41 @@ class Psikit(object):
         srv = xmlrpc.ServerProxy('http://localhost:9123')
         srv.do('delete *')
         srv.do('load '+os.path.join(filepath, 'target.mol'))
-        srv.do('load '+os.path.join(filepath, f'Psi_a_{nalpha}_{nalpha}-A.cube'))
-        srv.do('load '+os.path.join(filepath, f'Psi_b_{nalpha}_{nalpha}-A.cube'))
-        srv.do('load '+os.path.join(filepath, f'Psi_a_{nalpha+1}_{nalpha+1}-A.cube'))
-        srv.do('load '+os.path.join(filepath, f'Psi_b_{nalpha+1}_{nalpha+1}-A.cube'))
-        srv.do(f'isomesh HOMO_A, Psi_a_{nalpha}_{nalpha}-A, -0.02')
-        srv.do(f'isomesh HOMO_B, Psi_b_{nalpha}_{nalpha}-A, 0.02')
-        srv.do(f'isomesh LUMO_A, Psi_a_{nalpha+1}_{nalpha+1}-A, -0.02')
-        srv.do(f'isomesh LUMO_B, Psi_b_{nalpha+1}_{nalpha+1}-A, 0.02')
-        srv.do('color blue, HOMO_A')
-        srv.do('color red, HOMO_B')
-        srv.do('color blue, LUMO_A')
-        srv.do('color red, LUMO_B')
-        outputpath = os.path.join(filepath, 'mo.pse')
+        srv.do('as sticks, target')
+        if target == 'FRONTIER':
+            homof = glob.glob(f'Psi_a_{nalpha}*_HOMO.cube')[0]
+            lumof = glob.glob(f'Psi_a_{nalpha+1}*_LUMO.cube')[0]
+            srv.do('load '+os.path.join(filepath, homof) + ',HOMO')
+            srv.do('load '+os.path.join(filepath, lumof)+ ',LUMO')
+            srv.do(f'isosurface HOMO_A, HOMO, -0.02')
+            srv.do(f'isosurface HOMO_B, HOMO, 0.02')
+            srv.do(f'isosurface LUMO_A, LUMO, -0.02')
+            srv.do(f'isosurface LUMO_B, LUMO, 0.02')
+            srv.do('color blue, HOMO_A')
+            srv.do('color red, HOMO_B')
+            srv.do('color green, LUMO_A')
+            srv.do('color yellow, LUMO_B')
+            srv.do('set transparency, 0.2')
+            srv.do('disable HOMO_A')
+            srv.do('disable HOMO_B')
+            abb = 'frontier_'
+        elif target == 'ESP':
+            srv.do('load '+ 'ESP.cube' + ', ESP')
+            srv.do('show surface, target')
+            srv.do(f'ramp_new cmap, ESP, [-{maprange}, {maprange}]')
+            srv.do('color cmap, target')
+            srv.do('set transparency, 0.2')
+            abb = 'esp_'
+        elif target == 'DUAL':
+            dualf = glob.glob('DUAL*.cube')[0]
+            srv.do('load '+ dualf + ', DUAL_DESC')
+            srv.do('show surface, target')
+            srv.do(f'ramp_new cmap, DUAL_DESC, [-{maprange}, {maprange}]')
+            srv.do('color cmap, target')
+            srv.do('set transparency, 0.2')
+            abb = 'dual_'
+
+        outputpath = os.path.join(filepath, abb + 'mo.pse')
         srv.do(f'save {outputpath}')
         print('finished !')
 
