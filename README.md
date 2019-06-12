@@ -10,7 +10,7 @@ Inspired from the entry:[Calculate HOMO and LUMO with Psi4](https://iwatobipen.w
 
 ## Install Psikit
 
-Psikit is under development but the current version of Psikit can install from pypi or conda.
+Psikit is under development but you can install the current version of Psikit from pypi or conda.
 
 **via conda**
 
