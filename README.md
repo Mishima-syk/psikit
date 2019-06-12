@@ -20,7 +20,12 @@ Recent version of Psikit can install from github.
 Psikit is under development.
 But current version of Psikit can install from pypi or conda.
 
+**via pip**
+
     pip install psikit
+
+**via conda**
+
     conda install -c iwatobipen psikit
 
 
