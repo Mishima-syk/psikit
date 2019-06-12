@@ -8,26 +8,21 @@ Inspired from the entry:[Calculate HOMO and LUMO with Psi4](https://iwatobipen.w
     conda install -c rdkit rdkit
     conda install -c psi4 resp # optional
 
-## Install Psikit from Github
+## Install Psikit
 
-Psikit is under development.
-Recent version of Psikit can install from github.
-
-    pip install git+https://github.com/Mishima-syk/psikit
-
-## Install Psikit with pip
-
-Psikit is under development.
-But current version of Psikit can install from pypi or conda.
-
-**via pip**
-
-    pip install psikit
+Psikit is under development but the current version of Psikit can install from pypi or conda.
 
 **via conda**
 
     conda install -c iwatobipen psikit
 
+**via pip**
+
+    pip install psikit
+
+**via pip from github**
+
+    pip install git+https://github.com/Mishima-syk/psikit
 
 ## Usage
 
