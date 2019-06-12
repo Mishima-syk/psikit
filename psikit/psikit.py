@@ -6,6 +6,9 @@ import numpy as np
 import glob
 import os
 import uuid
+import warnings
+from debtcollerctor import moves
+warnings.simplefilter('always')
 
 class Psikit(object):
     def __init__(self, threads=4, memory=4, debug=False):
@@ -104,7 +107,7 @@ class Psikit(object):
     def clone_mol(self):
         return Chem.Mol(self.mol)
 
-    def getMOview(self, gridspace=0.3):
+    def create_cube_files(self, gridspace=0.3):
         if self.wfn == None:
             print('please run optimze()/energy() at first!')
             return None
@@ -117,6 +120,8 @@ class Psikit(object):
             self.psi4.cubeprop(self.wfn)
             print('Done!')
     
+    getMOview = moves.moved_function(create_cube_files, 'getMOview', __name__)
+
     def view_on_pymol(self, target='FRONTIER', maprange=0.05):
         '''
         To use the function, user need to install pymol and run the pymol for server mode
