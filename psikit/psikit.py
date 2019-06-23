@@ -7,7 +7,7 @@ import glob
 import os
 import uuid
 import warnings
-from debtcollerctor import moves
+from debtcollector import moves
 warnings.simplefilter('always')
 
 class Psikit(object):

@@ -15,6 +15,6 @@ setup(name='Psikit',
       author_email='kerolinq@gmail.com, seritaka@gmail.com',
       url='https://github.com/Mishima-syk/psikit',
       packages=['psikit'],
-      install_requires=[],
+      install_requires=['debtcollector'],
       license='MIT',
      )
