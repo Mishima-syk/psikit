@@ -88,7 +88,7 @@ Psikit is under development but you can install the current version of Psikit fr
     #array([-0.30006577,  0.33900448, -0.35983788, -0.28463832,  0.12439944,
     #    0.12810672,  0.11935266,  0.23367866])
 
-### Rendering Molecular Orbital
+### Rendering Molecular Orbitals
     
     # launch pymol as a RPC server, "pymol -R"
     from psikit import Psikit
