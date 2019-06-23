@@ -88,7 +88,18 @@ Psikit is under development but you can install the current version of Psikit fr
     #array([-0.30006577,  0.33900448, -0.35983788, -0.28463832,  0.12439944,
     #    0.12810672,  0.11935266,  0.23367866])
 
- 
+### Rendering Molecular Orbital
+    
+    # launch pymol as a RPC server, "pymol -R"
+    from psikit import Psikit
+    pk = Psikit()
+    pk.read_from_smiles("c1ccccc1")
+    pk.optimize(basis_sets="scf/sto-3g")
+    pk.create_cube_files()
+    pk.view_on_pymol()
+
+![HOMO of benzene](images/homo.png)
+
 ### Jupyter notebook
 
 - [RESP charge](https://github.com/Mishima-syk/psikit/blob/master/examples/Rendering_RESP_charge/RESP%20charge%20of%20the%20tetrazole.ipynb)
