@@ -100,7 +100,7 @@ Psikit is under development but you can install the current version of Psikit fr
 
 ![HOMO of benzene](images/homo.png)
 
-### Adding RDKit mol object to Psikit object directory
+### Adding RDKit mol object to Psikit object directly
 
     from psikit import Psikit
     pk = Psikit()
