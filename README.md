@@ -100,6 +100,12 @@ Psikit is under development but you can install the current version of Psikit fr
 
 ![HOMO of benzene](images/homo.png)
 
+### Adding RDKit mol object to Psikit object directory
+
+    from psikit import Psikit
+    pk = Psikit()
+    pk.mol = your_mol_object
+
 ### Jupyter notebook
 
 - [RESP charge](https://github.com/Mishima-syk/psikit/blob/master/examples/Rendering_RESP_charge/RESP%20charge%20of%20the%20tetrazole.ipynb)
