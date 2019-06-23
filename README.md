@@ -6,6 +6,7 @@ Inspired from the entry:[Calculate HOMO and LUMO with Psi4](https://iwatobipen.w
 
     conda install -c psi4 psi4
     conda install -c rdkit rdkit
+    conda install -c conda-forge debtcollector
     conda install -c psi4 resp # optional
 
 ## Install Psikit
