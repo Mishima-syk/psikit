@@ -25,6 +25,10 @@ Psikit is under development but you can install the current version of Psikit fr
 
     pip install git+https://github.com/Mishima-syk/psikit
 
+## Testing Psikit
+
+    pytest --disable-warnings -v
+
 ## Usage
 
 ### Single point calcuration
