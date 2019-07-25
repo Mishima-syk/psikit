@@ -10,6 +10,16 @@ import warnings
 from debtcollector import moves
 warnings.simplefilter('always')
 
+def mol2xyz(mol):
+    xyz_string = "\n"
+    for atom in mol.GetAtoms():
+        pos = mol.GetConformer().GetAtomPosition(atom.GetIdx())
+        xyz_string += "{} {} {} {}\n".format(atom.GetSymbol(), pos.x, pos.y, pos.z)
+    # the "no_com" stops Psi4 from moving your molecule to its center of mass, 
+    # "no_reorient" stops it from spinning to align with axis of inertia
+    return xyz_string
+
+
 class Psikit(object):
     def __init__(self, threads=4, memory=4, debug=False):
         import psi4
@@ -299,4 +309,46 @@ class Psikit(object):
     def exchange_matrix(self):
         return self.wfn.jk().K[0].to_array()
 
+class Sapt():
+    def __init__(self, threads=4, memory=4, debug=False):
+        import psi4
+        import  helper_SAPT
+
+        self.psi4 = psi4
+        self.helper_SAPT = helper_SAPT
+        self.psi4.set_memory("{} GB".format(memory))
+        #self.psi4.set_options({"save_jk": True})  # for JK calculation
+        self.psi4.set_num_threads(threads)
+        self.wfn = None
+        self.monomer1 = None
+        self.monomer2 = None
+        self.dimer = None
+        self.debug = debug
+        if self.debug:
+            self.psi4.core.set_output_file("psikit_out.dat", True)
+        else:
+            self.psi4.core.be_quiet()
+
+    def monomer1_from_molfile(self, molfile, opt=True, removeHs=False):
+        self.monomer1 = Chem.MolFromMolFile(molfile, removeHs=removeHs)
+
+    def monomer2_from_molfile(self, molfile, opt=True, removeHs=False):
+        self.monomer2 = Chem.MolFromMolFile(molfile, removeHs=removeHs)
+
+    def make_dimer(self):
+        xyz1 = mol2xyz(self.monomer1)
+        xyz2 = mol2xyz(self.monomer2)
+        self.dimer = "{}--\n{}".format(xyz1, xyz2)
+        #self.dimer += "no_reorient\n"
+        #self.dimer += "no_com\n"
+        #self.dimer += "units angstrom\n"
+        
+ 
+    def run_sapt(self, basis='aug-cc-pvdz', e_convergence=1e-8, d_convergence=1e-8, memory=4):
+        self.psi4.set_options({'basis':basis,
+                               'e_convergence':e_convergence,
+                               'd_convergence':d_convergence})
+        dimer = self.psi4.geometry(self.dimer)
+        sapt = self.helper_SAPT.helper_SAPT(dimer, memory=memory)
+        return sapt
 
