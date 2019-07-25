@@ -312,7 +312,7 @@ class Psikit(object):
 class Sapt():
     def __init__(self, threads=4, memory=4, debug=False):
         import psi4
-        import  helper_SAPT
+        import helper_SAPT
 
         self.psi4 = psi4
         self.helper_SAPT = helper_SAPT
