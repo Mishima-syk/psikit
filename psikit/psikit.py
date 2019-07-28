@@ -11,7 +11,8 @@ from debtcollector import moves
 warnings.simplefilter('always')
 
 def mol2xyz(mol):
-    xyz_string = "\n"
+    #xyz_string = "\n"
+    xyz_string = "\n{} 1\n".format(Chem.GetFormalCharge(mol))
     for atom in mol.GetAtoms():
         pos = mol.GetConformer().GetAtomPosition(atom.GetIdx())
         xyz_string += "{} {} {} {}\n".format(atom.GetSymbol(), pos.x, pos.y, pos.z)
@@ -339,9 +340,9 @@ class Sapt():
         xyz1 = mol2xyz(self.monomer1)
         xyz2 = mol2xyz(self.monomer2)
         self.dimer = "{}--\n{}".format(xyz1, xyz2)
-        #self.dimer += "no_reorient\n"
-        #self.dimer += "no_com\n"
-        #self.dimer += "units angstrom\n"
+        self.dimer += "no_reorient\n"
+        self.dimer += "no_com\n"
+        self.dimer += "units angstrom\n"
         
  
     def run_sapt(self, basis='aug-cc-pvdz', e_convergence=1e-8, d_convergence=1e-8, memory=4):
@@ -530,4 +531,28 @@ class Sapt():
         self.helper_SAPT.sapt_printer('Total SAPT0', sapt0)        
         return sapt0, Exch100, Elst10, Disp200, ExchDisp20, Ind20r, ExchInd20r
 
+    def run_fisapt(self, basis='jun-cc-pvdz', scf_type='df', d_convergence=1e-8, memory=4, fisapt_path='fsapt/'):
+        import shutil
+        from distutils.dir_util import copy_tree
+        from . import fsapt_helper
+        self.psi4.set_options({'basis':basis,
+                               'scf_type':scf_type,
+                               'd_convergence':d_convergence,
+                               'FISAPT_FSAPT_FILEPATH':fisapt_path,
+                               #'FISAPT_DO_PLOT': 'true'
+                               })
+        self.psi4.geometry(self.dimer)
+        fisapt = self.psi4.energy('fisapt0')
+        copy_tree(self.psi4.core.get_datadir()+'/fsapt', fisapt_path)
+        #sapt = self.helper_SAPT.helper_SAPT(dimer, memory=memory)
+        feats1 = fsapt_helper.make_feat_data(self.monomer1, 1)
+        feats2 = fsapt_helper.make_feat_data(self.monomer2, 1 + self.monomer1.GetNumAtoms())
+        with open(os.path.join(fisapt_path, 'fA.dat'), 'w') as fA:
+            for feat1 in feats1:
+                fA.write(' '.join(feat1) + '\n')
 
+        with open(os.path.join(fisapt_path,'fB.dat'), 'w') as fB:
+            for feat2 in feats2:
+                fB.write(' '.join(feat2) + '\n')
+
+        print('done')
