@@ -531,7 +531,7 @@ class Sapt():
         self.helper_SAPT.sapt_printer('Total SAPT0', sapt0)        
         return sapt0, Exch100, Elst10, Disp200, ExchDisp20, Ind20r, ExchInd20r
 
-    def run_fisapt(self, basis='jun-cc-pvdz', scf_type='df', d_convergence=1e-8, memory=4, fisapt_path='fsapt/'):
+    def run_fisapt(self, basis='jun-cc-pvdz', scf_type='df', d_convergence=1e-8, memory=4, fisapt_path='fsapt/', return_wfn=False):
         import shutil
         from distutils.dir_util import copy_tree
         from . import fsapt_helper
@@ -539,10 +539,10 @@ class Sapt():
                                'scf_type':scf_type,
                                'd_convergence':d_convergence,
                                'FISAPT_FSAPT_FILEPATH':fisapt_path,
-                               #'FISAPT_DO_PLOT': 'true'
+                               'FISAPT_DO_PLOT': 'true'
                                })
         self.psi4.geometry(self.dimer)
-        fisapt = self.psi4.energy('fisapt0')
+        res = self.psi4.energy('fisapt0', return_wfn=return_wfn)
         copy_tree(self.psi4.core.get_datadir()+'/fsapt', fisapt_path)
         #sapt = self.helper_SAPT.helper_SAPT(dimer, memory=memory)
         feats1 = fsapt_helper.make_feat_data(self.monomer1, 1)
@@ -556,3 +556,4 @@ class Sapt():
                 fB.write(' '.join(feat2) + '\n')
 
         print('done')
+        return res
