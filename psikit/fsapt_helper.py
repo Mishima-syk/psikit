@@ -26,10 +26,6 @@ def make_feat_data(mol, offset=1):
     if len(leaves) == 0:
 
         line = [i for i in range(mol.GetNumAtoms())]
-        #for atom in mol.GetAtoms():
-        #    if atom.GetSymbol() != 'H':
-        #        nei = get_neighbor_h(atom.GetIdx(), mol)
-        #    line += nei
         line = [str(n + offset) for n in line]
         line = [Chem.MolToSmiles(mol)] + line
         return [line]
