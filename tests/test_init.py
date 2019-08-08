@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.getcwd())
 from psikit import Psikit
 from psikit import Sapt
 import rdkit
