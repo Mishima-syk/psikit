@@ -10,16 +10,6 @@ import warnings
 from debtcollector import moves
 warnings.simplefilter('always')
 
-def mol2xyz(mol):
-    #xyz_string = "\n"
-    xyz_string = "\n{} 1\n".format(Chem.GetFormalCharge(mol))
-    for atom in mol.GetAtoms():
-        pos = mol.GetConformer().GetAtomPosition(atom.GetIdx())
-        xyz_string += "{} {} {} {}\n".format(atom.GetSymbol(), pos.x, pos.y, pos.z)
-    # the "no_com" stops Psi4 from moving your molecule to its center of mass, 
-    # "no_reorient" stops it from spinning to align with axis of inertia
-    return xyz_string
-
 
 class Psikit(object):
     def __init__(self, threads=4, memory=4, debug=False):
@@ -52,22 +42,22 @@ class Psikit(object):
         AllChem.EmbedMolecule(self.mol, useExpTorsionAnglePrefs=True,useBasicKnowledge=True)
         AllChem.UFFOptimizeMolecule(self.mol)
 
-    def geometry(self):
-        xyz = self.mol2xyz()
+    def geometry(self, multiplicity=1):
+        xyz = self.mol2xyz(multiplicity=multiplicity)
         self.psi4.geometry(xyz)
 
-    def energy(self, basis_sets= "scf/6-31g**", return_wfn=True):
-        self.geometry()
+    def energy(self, basis_sets= "scf/6-31g**", return_wfn=True, multiplicity=1):
+        self.geometry(multiplicity=multiplicity)
         scf_energy, wfn = self.psi4.energy(basis_sets, return_wfn=return_wfn)
         self.psi4.core.clean()
         self.wfn = wfn
         return scf_energy
 
-    def optimize(self, basis_sets= "scf/6-31g**", return_wfn=True, name=None, maxiter=50):
+    def optimize(self, basis_sets= "scf/6-31g**", return_wfn=True, name=None, multiplicity=1, maxiter=50):
         if not name:
             name = uuid.uuid4().hex
         self.psi4.core.IO.set_default_namespace(name)
-        self.geometry()
+        self.geometry(multiplicity=multiplicity)
         self.psi4.set_options({'GEOM_MAXITER':maxiter})
         try:
             scf_energy, wfn = self.psi4.optimize(basis_sets, return_wfn=return_wfn)
@@ -92,8 +82,9 @@ class Psikit(object):
         """
         self.psi4.set_options(kwargs)
 
-    def mol2xyz(self):
-        xyz_string = "\n{} 1\n".format(Chem.GetFormalCharge(self.mol))
+    def mol2xyz(self, multiplicity=1):
+        charge = Chem.GetFormalCharge(self.mol)
+        xyz_string = "\n{} {}\n".format(charge, multiplicity)
         for atom in self.mol.GetAtoms():
             pos = self.mol.GetConformer().GetAtomPosition(atom.GetIdx())
             xyz_string += "{} {} {} {}\n".format(atom.GetSymbol(), pos.x, pos.y, pos.z)
