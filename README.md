@@ -117,6 +117,8 @@ Psikit is under development but you can install the current version of Psikit fr
 - [Rendering Orbital with VMD](https://github.com/Mishima-syk/psikit/blob/master/examples/Rendering_Orbital/Render_orbital.ipynb)
 - [Rendering Orbital in PyMol](https://github.com/Mishima-syk/psikit/blob/master/examples/Rendering_Orbital_in_PyMol/Visualize_MO_in_PyMol.ipynb)
 - [Charge Comparison](https://github.com/Mishima-syk/psikit/blob/master/examples/CHARGE_COMPARISON/charge_comparison.ipynb)
+- [SAPT](https://github.com/Mishima-syk/psikit/blob/master/examples/example_sapt/sapt_ex.ipynb)
+- [FSAPT](https://github.com/Mishima-syk/psikit/blob/master/examples/example_sapt/fsapt_ex.ipynb)
 
 ### License
 
