@@ -18,8 +18,8 @@ def test_sapt():
 def test_fisapt():
     sapt = Sapt()
     sapt.psi4.core.clean()
-    sapt.monomer1_from_molfile('tests/saptex/phenol1.mol')
-    sapt.monomer2_from_molfile('tests/saptex/phenol2.mol')
+    sapt.monomer1_from_molfile('tests/saptex/water1.mol')
+    sapt.monomer2_from_molfile('tests/saptex/water2.mol')
     sapt.make_dimer()
     e = sapt.run_fisapt()
-    assert pytest.approx(-0.011385703498804293, 0.000000005) == e
+    assert pytest.approx(-0.00822262799944366, 0.000000005) == e
