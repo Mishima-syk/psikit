@@ -82,11 +82,15 @@ class Psikit(object):
         """
         self.psi4.set_options(kwargs)
 
-    def mol2xyz(self, multiplicity=1):
-        charge = Chem.GetFormalCharge(self.mol)
+    def mol2xyz(self, mol=None, multiplicity=1):
+        if mol is not None:
+            mol = mol
+        else:
+            mol = self.mol
+        charge = Chem.GetFormalCharge(mol)
         xyz_string = "\n{} {}\n".format(charge, multiplicity)
-        for atom in self.mol.GetAtoms():
-            pos = self.mol.GetConformer().GetAtomPosition(atom.GetIdx())
+        for atom in mol.GetAtoms():
+            pos = mol.GetConformer().GetAtomPosition(atom.GetIdx())
             xyz_string += "{} {} {} {}\n".format(atom.GetSymbol(), pos.x, pos.y, pos.z)
         # the "no_com" stops Psi4 from moving your molecule to its center of mass, 
         # "no_reorient" stops it from spinning to align with axis of inertia
@@ -301,7 +305,7 @@ class Psikit(object):
     def exchange_matrix(self):
         return self.wfn.jk().K[0].to_array()
 
-class Sapt():
+class Sapt(Psikit):
     def __init__(self, threads=4, memory=4, debug=False):
         import psi4
         from . import helper_SAPT
@@ -328,8 +332,8 @@ class Sapt():
         self.monomer2 = Chem.MolFromMolFile(molfile, removeHs=removeHs)
 
     def make_dimer(self):
-        xyz1 = mol2xyz(self.monomer1)
-        xyz2 = mol2xyz(self.monomer2)
+        xyz1 = self.mol2xyz(mol=self.monomer1)
+        xyz2 = self.mol2xyz(mol=self.monomer2)
         self.dimer = "{}--\n{}".format(xyz1, xyz2)
         self.dimer += "no_reorient\n"
         self.dimer += "no_com\n"
