@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from psikit import Psikit
-from psikit import sapt
+from psikit import Sapt
 import rdkit
 import pytest
 

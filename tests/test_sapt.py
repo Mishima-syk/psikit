@@ -23,3 +23,4 @@ def test_fisapt():
     sapt.make_dimer()
     e = sapt.run_fisapt()
     assert pytest.approx(-0.00822262799944366, 0.000000005) == e
+

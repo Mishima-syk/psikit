@@ -86,7 +86,7 @@ class Psikit(object):
         charge = Chem.GetFormalCharge(self.mol)
         xyz_string = "\n{} {}\n".format(charge, multiplicity)
         for atom in self.mol.GetAtoms():
-            pos = self.mol.GetConformer().GetAtomPosition(atom.GetIdx())
+            pos = self.mol.GetConformer().GetAtomPosition(atom.GetIdx()
             xyz_string += "{} {} {} {}\n".format(atom.GetSymbol(), pos.x, pos.y, pos.z)
         # the "no_com" stops Psi4 from moving your molecule to its center of mass, 
         # "no_reorient" stops it from spinning to align with axis of inertia
