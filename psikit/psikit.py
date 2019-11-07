@@ -9,7 +9,7 @@ import uuid
 import warnings
 from debtcollector import moves
 from .util import mol2xyz
-from .pymol_helper import run_pymol_server
+from .pymol_helper import run_pymol_server, save_pyscript
 warnings.simplefilter('always')
 
 
@@ -112,46 +112,16 @@ class Psikit(object):
                                    "cubic_grid_spacing":[gridspace, gridspace, gridspace]})
             Chem.MolToMolFile(self.mol, 'target.mol')
             self.psi4.cubeprop(self.wfn)
-            print('Done!')
     
     getMOview = moves.moved_function(create_cube_files, 'getMOview', __name__)
 
-    def view_on_pymol(self, target='FRONTIER', maprange=0.05):
-        run_pymol_server(nalpha = self.wfn.nalpha(), target=target, maprange=maprange)
+    def view_on_pymol(self, target='FRONTIER', maprange=0.05, gridspace=0.3):
+        self.create_cube_files(gridspace=gridspace)
+        run_pymol_server(nalpha=self.wfn.nalpha(), target=target, maprange=maprange)
 
-    def save_frontier(self, gridspace=0.15):
-        if self.wfn == None:
-            print('please run optimze()/energy() at first!')
-        else:
-            a = self.wfn.nalpha()  # HOMO
-            b = a + 1  # LUMO
-            self.psi4.set_options({"cubeprop_tasks":['orbitals'],
-                                   "cubeprop_orbitals":[a, b, -a, -b],
-                                   "cubic_grid_spacing":[gridspace, gridspace, gridspace]})
-            Chem.MolToMolFile(self.mol, 'target.mol')
-            self.psi4.cubeprop(self.wfn)
-
-            homo_a = "Psi_a_{0}_{0}-A".format(a)
-            homo_b = "Psi_b_{0}_{0}-A".format(a)
-            lumo_a = "Psi_a_{0}_{0}-A".format(b)
-            lumo_b = "Psi_b_{0}_{0}-A".format(b)
-            with open("frontier.py", "w") as f:
-                f.write('from pymol import *\n')
-                f.write('cmd.load("{0}.cube")\n'.format(homo_a))
-                f.write('cmd.load("{0}.cube")\n'.format(homo_b))
-                f.write('cmd.load("{0}.cube")\n'.format(lumo_a))
-                f.write('cmd.load("{0}.cube")\n'.format(lumo_b))
-                f.write('cmd.load("target.mol")\n')               
-                f.write('cmd.isomesh("HOMO_A", "{0}", -0.02)\n'.format(homo_a))
-                f.write('cmd.isomesh("HOMO_B", "{0}", 0.02)\n'.format(homo_b))
-                f.write('cmd.isomesh("LUMO_A", "{0}", 0.02)\n'.format(lumo_a))
-                f.write('cmd.isomesh("LUMO_B", "{0}", -0.02)\n'.format(lumo_b))
-                f.write('cmd.color("blue", "HOMO_A")\n')       
-                f.write('cmd.color("red", "HOMO_B")\n')       
-                f.write('cmd.color("blue", "LUMO_A")\n')
-                f.write('cmd.color("red", "LUMO_B")\n')
-                f.write('cmd.disable("LUMO_A")\n')              
-                f.write('cmd.disable("LUMO_B")\n')         
+    def save_frontier(self, gridspace=0.3):
+        self.create_cube_files(gridspace=gridspace)
+        save_pyscript(nalpha=self.wfn.nalpha())  
 
     def save_fchk(self, filename="output.fchk"):
         fchk_writer = self.psi4.core.FCHKWriter(self.wfn)

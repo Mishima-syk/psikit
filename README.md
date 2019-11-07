@@ -94,13 +94,11 @@ Psikit is under development but you can install the current version of Psikit fr
 
 ### Rendering Molecular Orbitals
     
-    # launch pymol as a RPC server, "pymol -R"
     from psikit import Psikit
     pk = Psikit()
     pk.read_from_smiles("c1ccccc1")
     pk.optimize(basis_sets="scf/sto-3g")
-    pk.create_cube_files()
-    pk.view_on_pymol()
+    pk.view_on_pymol() # launch pymol as a RPC server in advance, just type "pymol -R"
 
 ![HOMO of benzene](images/homo.png)
 

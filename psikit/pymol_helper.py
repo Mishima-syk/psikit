@@ -53,3 +53,29 @@ def run_pymol_server(nalpha=None, target='FRONTIER', maprange=0.05):
     outputpath = os.path.join(filepath, abb + 'mo.pse')
     srv.do(f'save {outputpath}')
     print('finished !')
+
+
+deg save_pyscript(nalpha=None):
+    a = self.wfn.nalpha()  # HOMO
+    b = a + 1  # LUMO
+    homo_a = "Psi_a_{0}_{0}-A".format(a)
+    homo_b = "Psi_b_{0}_{0}-A".format(a)
+    lumo_a = "Psi_a_{0}_{0}-A".format(b)
+    lumo_b = "Psi_b_{0}_{0}-A".format(b)
+    with open("frontier.py", "w") as f:
+        f.write('from pymol import *\n')
+        f.write('cmd.load("{0}.cube")\n'.format(homo_a))
+        f.write('cmd.load("{0}.cube")\n'.format(homo_b))
+        f.write('cmd.load("{0}.cube")\n'.format(lumo_a))
+        f.write('cmd.load("{0}.cube")\n'.format(lumo_b))
+        f.write('cmd.load("target.mol")\n')               
+        f.write('cmd.isomesh("HOMO_A", "{0}", -0.02)\n'.format(homo_a))
+        f.write('cmd.isomesh("HOMO_B", "{0}", 0.02)\n'.format(homo_b))
+        f.write('cmd.isomesh("LUMO_A", "{0}", 0.02)\n'.format(lumo_a))
+        f.write('cmd.isomesh("LUMO_B", "{0}", -0.02)\n'.format(lumo_b))
+        f.write('cmd.color("blue", "HOMO_A")\n')       
+        f.write('cmd.color("red", "HOMO_B")\n')       
+        f.write('cmd.color("blue", "LUMO_A")\n')
+        f.write('cmd.color("red", "LUMO_B")\n')
+        f.write('cmd.disable("LUMO_A")\n')              
+        f.write('cmd.disable("LUMO_B")\n')       
