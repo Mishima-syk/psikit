@@ -8,6 +8,7 @@ import os
 import uuid
 import warnings
 from debtcollector import moves
+from .util import mol2xyz
 warnings.simplefilter('always')
 
 
@@ -83,17 +84,7 @@ class Psikit(object):
         self.psi4.set_options(kwargs)
 
     def mol2xyz(self, multiplicity=1):
-        charge = Chem.GetFormalCharge(self.mol)
-        xyz_string = "\n{} {}\n".format(charge, multiplicity)
-        for atom in self.mol.GetAtoms():
-            pos = self.mol.GetConformer().GetAtomPosition(atom.GetIdx())
-            xyz_string += "{} {} {} {}\n".format(atom.GetSymbol(), pos.x, pos.y, pos.z)
-        # the "no_com" stops Psi4 from moving your molecule to its center of mass, 
-        # "no_reorient" stops it from spinning to align with axis of inertia
-        xyz_string += "no_reorient\n"
-        xyz_string += "no_com\n"
-        xyz_string += "units angstrom\n"
-        return xyz_string
+        return mol2xyz(self.mol)
 
     def xyz2mol(self, confId=0):
         natom = self.wfn.molecule().natom()

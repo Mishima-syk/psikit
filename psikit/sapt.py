@@ -2,14 +2,7 @@ from rdkit import Chem
 from psikit import Psikit
 import numpy as np
 import os
-
-def mol2xyz(mol, multiplicity=1):
-    charge = Chem.GetFormalCharge(mol)
-    xyz_string = "\n{} {}\n".format(charge, multiplicity)
-    for atom in mol.GetAtoms():
-        pos = mol.GetConformer().GetAtomPosition(atom.GetIdx())
-        xyz_string += "{} {} {} {}\n".format(atom.GetSymbol(), pos.x, pos.y, pos.z)
-    return xyz_string
+from .util import mol2xyz
 
 class Sapt():
     def __init__(self, threads=4, memory=4, debug=False):

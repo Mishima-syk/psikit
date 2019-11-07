@@ -13,6 +13,7 @@ def test_mul1_energy():
     energy = pk.energy(multiplicity=1)
     assert pytest.approx(-115.0421871159, 0.000000005) == energy
 
+@pytest.mark.skip
 def test_mul3_energy():
     pk = Psikit()
     pk.read_from_smiles("CO")
