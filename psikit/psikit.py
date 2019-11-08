@@ -10,7 +10,7 @@ import warnings
 from debtcollector import moves
 from .util import mol2xyz
 from .pymol_helper import run_pymol_server, save_pyscript
-warnings.simplefilter('always')
+warnings.simplefilter('ignore')
 
 
 class Psikit(object):

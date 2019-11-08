@@ -55,8 +55,8 @@ def run_pymol_server(nalpha=None, target='FRONTIER', maprange=0.05):
     print('finished !')
 
 
-deg save_pyscript(nalpha=None):
-    a = self.wfn.nalpha()  # HOMO
+def save_pyscript(nalpha=None):
+    a = nalpha  # HOMO
     b = a + 1  # LUMO
     homo_a = "Psi_a_{0}_{0}-A".format(a)
     homo_b = "Psi_b_{0}_{0}-A".format(a)
