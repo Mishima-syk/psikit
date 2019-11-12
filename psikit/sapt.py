@@ -249,6 +249,5 @@ class Sapt():
             for feat2 in feats2:
                 fB.write(' '.join(feat2) + '\n')
 
-        print('done')
         return res
     
