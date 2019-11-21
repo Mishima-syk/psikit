@@ -7,6 +7,8 @@ import glob
 import os
 import uuid
 import warnings
+from tempfile import mkdtemp
+from shutil import rmtree
 from debtcollector import moves
 from .util import mol2xyz
 from .pymol_helper import run_pymol_server, save_pyscript
@@ -23,11 +25,15 @@ class Psikit(object):
         self.wfn = None
         self.mol = None
         self.debug = debug
+        self.tempdir = mkdtemp()
         if self.debug:
             self.psi4.core.set_output_file("psikit_out.dat", True)
         else:
             self.psi4.core.be_quiet()
 
+    def clean(self):
+        rmtree(self.tempdir)
+    
     def read_from_smiles(self, smiles_str, opt=True):
         self.mol = Chem.MolFromSmiles(smiles_str)
         if opt:
@@ -103,25 +109,27 @@ class Psikit(object):
 
     def create_cube_files(self, gridspace=0.3):
         if self.wfn == None:
-            print('please run optimze()/energy() at first!')
+            print('wfn not found. run optimze()/energy()')
             return None
         else:
             a = self.wfn.nalpha()  # HOMO
             b = a + 1  # LUMO
-            self.psi4.set_options({"cubeprop_tasks":['ESP', 'FRONTIER_ORBITALS', 'Density', 'DUAL_DESCRIPTOR'],
-                                   "cubic_grid_spacing":[gridspace, gridspace, gridspace]})
-            Chem.MolToMolFile(self.mol, 'target.mol')
+            self.psi4.set_options({"cubeprop_tasks": ['ESP', 'FRONTIER_ORBITALS', 'Density', 'DUAL_DESCRIPTOR'],
+                                   "cubic_grid_spacing": [gridspace, gridspace, gridspace],
+                                   "cubeprop_filepath": self.tempdir
+                                   })
+            Chem.MolToMolFile(self.mol, os.path.join(self.tempdir, 'target.mol'))
             self.psi4.cubeprop(self.wfn)
     
     getMOview = moves.moved_function(create_cube_files, 'getMOview', __name__)
 
     def view_on_pymol(self, target='FRONTIER', maprange=0.05, gridspace=0.3):
         self.create_cube_files(gridspace=gridspace)
-        run_pymol_server(nalpha=self.wfn.nalpha(), target=target, maprange=maprange)
+        run_pymol_server(self.tempdir, target=target, maprange=maprange)
 
-    def save_frontier(self, gridspace=0.3):
+    def save_frontier(self, gridspace=0.3, isotype="isosurface"):
         self.create_cube_files(gridspace=gridspace)
-        save_pyscript(nalpha=self.wfn.nalpha())  
+        save_pyscript(self.tempdir, isotype=isotype)  
 
     def save_fchk(self, filename="output.fchk"):
         fchk_writer = self.psi4.core.FCHKWriter(self.wfn)

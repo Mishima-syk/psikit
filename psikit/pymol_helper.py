@@ -1,7 +1,7 @@
 from glob import glob
 import os
 
-def run_pymol_server(nalpha=None, target='FRONTIER', maprange=0.05):
+def run_pymol_server(tmpdir, target='FRONTIER', maprange=0.05):
     '''
     To use the function, user need to install pymol and run the pymol for server mode
     The command is pymol -R
@@ -18,10 +18,10 @@ def run_pymol_server(nalpha=None, target='FRONTIER', maprange=0.05):
     srv.do('load '+os.path.join(filepath, 'target.mol'))
     srv.do('as sticks, target')
     if target == 'FRONTIER':
-        homof = glob(f'Psi_a_{nalpha}*_HOMO.cube')[0]
-        lumof = glob(f'Psi_a_{nalpha+1}*_LUMO.cube')[0]
-        srv.do('load '+os.path.join(filepath, homof) + ',HOMO')
-        srv.do('load '+os.path.join(filepath, lumof)+ ',LUMO')
+        homof = glob(os.path.join(tmpdir, 'Psi*_HOMO.cube'))[0]
+        lumof = glob(os.path.join(tmpdir, 'Psi*_LUMO.cube'))[0]
+        srv.do('load ' + homof + ',HOMO')
+        srv.do('load ' + lumof + ',LUMO')
         srv.do(f'isosurface HOMO_A, HOMO, -0.02')
         srv.do(f'isosurface HOMO_B, HOMO, 0.02')
         srv.do(f'isosurface LUMO_A, LUMO, -0.02')
@@ -55,24 +55,24 @@ def run_pymol_server(nalpha=None, target='FRONTIER', maprange=0.05):
     print('finished !')
 
 
-def save_pyscript(nalpha=None):
-    a = nalpha  # HOMO
-    b = a + 1  # LUMO
-    homo_a = "Psi_a_{0}_{0}-A".format(a)
-    homo_b = "Psi_b_{0}_{0}-A".format(a)
-    lumo_a = "Psi_a_{0}_{0}-A".format(b)
-    lumo_b = "Psi_b_{0}_{0}-A".format(b)
+def save_pyscript(tmpdir, isotype="isosurface"):
+    homof = glob(os.path.join(tmpdir, 'Psi*_HOMO.cube'))[0]
+    lumof = glob(os.path.join(tmpdir, 'Psi*_LUMO.cube'))[0]
     with open("frontier.py", "w") as f:
         f.write('from pymol import *\n')
-        f.write('cmd.load("{0}.cube")\n'.format(homo_a))
-        f.write('cmd.load("{0}.cube")\n'.format(homo_b))
-        f.write('cmd.load("{0}.cube")\n'.format(lumo_a))
-        f.write('cmd.load("{0}.cube")\n'.format(lumo_b))
-        f.write('cmd.load("target.mol")\n')               
-        f.write('cmd.isomesh("HOMO_A", "{0}", -0.02)\n'.format(homo_a))
-        f.write('cmd.isomesh("HOMO_B", "{0}", 0.02)\n'.format(homo_b))
-        f.write('cmd.isomesh("LUMO_A", "{0}", 0.02)\n'.format(lumo_a))
-        f.write('cmd.isomesh("LUMO_B", "{0}", -0.02)\n'.format(lumo_b))
+        f.write('cmd.load("{0}", "HOMO")\n'.format(homof))
+        f.write('cmd.load("{0}", "LUMO")\n'.format(lumof))
+        f.write('cmd.load("{0}")\n'.format(os.path.join(tmpdir, "target.mol")))
+        if isotype == "isomesh":        
+            f.write('cmd.isomesh("HOMO_A", "HOMO", -0.02)\n')
+            f.write('cmd.isomesh("HOMO_B", "HOMO", 0.02)\n')
+            f.write('cmd.isomesh("LUMO_A", "LUMO", 0.02)\n')
+            f.write('cmd.isomesh("LUMO_B", "LUMO", -0.02)\n')
+        else:
+            f.write('cmd.isosurface("HOMO_A", "HOMO", -0.02)\n')
+            f.write('cmd.isosurface("HOMO_B", "HOMO", 0.02)\n')
+            f.write('cmd.isosurface("LUMO_A", "LUMO", 0.02)\n')
+            f.write('cmd.isosurface("LUMO_B", "LUMO", -0.02)\n')            
         f.write('cmd.color("blue", "HOMO_A")\n')       
         f.write('cmd.color("red", "HOMO_B")\n')       
         f.write('cmd.color("blue", "LUMO_A")\n')

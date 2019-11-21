@@ -4,3 +4,5 @@ __pycache__
 *.clean
 .DS_Store
 build
+*.cube
+*.pse
