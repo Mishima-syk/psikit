@@ -12,10 +12,9 @@ def run_pymol_server(tmpdir, target='FRONTIER', maprange=0.05):
         raise Exception(f'Please set target from ESP, FRONTIER, DENSITY!!')
     import sys
     import xmlrpc.client as xmlrpc
-    filepath = os.getcwd()
     srv = xmlrpc.ServerProxy('http://localhost:9123')
     srv.do('delete *')
-    srv.do('load '+os.path.join(filepath, 'target.mol'))
+    srv.do('load '+os.path.join(tmpdir, 'target.mol'))
     srv.do('as sticks, target')
     if target == 'FRONTIER':
         homof = glob(os.path.join(tmpdir, 'Psi*_HOMO.cube'))[0]
@@ -50,7 +49,7 @@ def run_pymol_server(tmpdir, target='FRONTIER', maprange=0.05):
         srv.do('set transparency, 0.2')
         abb = 'dual_'
 
-    outputpath = os.path.join(filepath, abb + 'mo.pse')
+    outputpath = abb + 'mo.pse'
     srv.do(f'save {outputpath}')
     print('finished !')
 

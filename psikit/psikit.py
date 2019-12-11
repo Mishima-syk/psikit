@@ -59,6 +59,7 @@ class Psikit(object):
         scf_energy, wfn = self.psi4.energy(basis_sets, return_wfn=return_wfn)
         self.psi4.core.clean()
         self.wfn = wfn
+        self.mol = self.xyz2mol()
         return scf_energy
 
     def optimize(self, basis_sets= "scf/6-31g**", return_wfn=True, name=None, multiplicity=1, maxiter=50):
