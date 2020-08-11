@@ -150,20 +150,29 @@ class Psikit(object):
             print('conda install -c psi4 resp')
             return None
         # https://www.cgl.ucsf.edu/chimerax/docs/user/radii.html
-        options = {'N_VDW_LAYERS'       : 4,
-                   'VDW_SCALE_FACTOR'   : 1.4,
-                   'VDW_INCREMENT'      : 0.2,
+        options = {'VDW_SCALE_FACTORS' : [1.4, 1.6, 1.8, 2.0],
                    'VDW_POINT_DENSITY'  : 1.0,
-                   'resp_a'             : 0.0005,
+                   'RESP_A'             : 0.0005,
                    'RESP_B'             : 0.1,
-                   'RADIUS'             : {'Br':1.98, 'I':2.09, }
+                   'RESTRAINT'          : True,
+                   'RADIUS'             : {'Br':1.98, 'I':2.09,}
                    }
-        charges = resp.resp([self.wfn.molecule()], [options])
+        charges = resp.resp([self.wfn.molecule()], options)
+        breakpoint()
+
+        options['resp_a'] = 0.001
+        resp.set_stage2_constraint(self.wfn.molecule(), charges[1], options)
+        options['grid']=['%i_%s_grid.dat'%(1, self.wfn.molecule().name())]
+        options['esp']=['%i_%s_grid_esp.dat'%(1, self.wfn.molecule().name())]
+
+        charges2 = resp.resp([self.wfn.molecule()], options)
+
         atoms = self.mol.GetAtoms()
         for idx, atom in enumerate(atoms):
-            atom.SetDoubleProp("EP", charges[0][0][idx])
-            atom.SetDoubleProp("RESP", charges[0][1][idx])
-        return charges[0][1]
+            atom.SetDoubleProp("EP", charges2[0][idx])
+            atom.SetDoubleProp("RESP", charges2[1][idx])
+        return charges2[1]
+
 
     def calc_mulliken_charges(self):
         '''
