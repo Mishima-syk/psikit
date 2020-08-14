@@ -158,7 +158,7 @@ class Psikit(object):
                    'RADIUS'             : {'Br':1.98, 'I':2.09,}
                    }
         charges = resp.resp([self.wfn.molecule()], options)
-        breakpoint()
+        #breakpoint()
 
         options['resp_a'] = 0.001
         resp.set_stage2_constraint(self.wfn.molecule(), charges[1], options)
