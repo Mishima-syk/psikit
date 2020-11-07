@@ -1,0 +1,40 @@
+{% set name = "Psikit" %}
+{% set version = "0.2.0" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  url: "https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz"
+  sha256: 10e66084c426fdd94bc32b18806567e8a18aab4dbdad7a194c79312a8f09ad85
+
+build:
+  number: 0
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  host:
+    #- debtcollector
+    - pip
+    - python
+  run:
+    - debtcollector
+    - python
+
+test:
+  imports:
+    - psikit
+
+about:
+  home: "https://github.com/Mishima-syk/psikit"
+  license: MIT
+  license_family: MIT
+  license_file: 
+  summary: "A thin wrapper library for Psi4 and RDKit"
+  doc_url: 
+  dev_url: 
+
+extra:
+  recipe-maintainers:
+    - your-github-id-here
