@@ -208,11 +208,9 @@ class Psikit(object):
     @property
     def dipolemoment(self, basis_sets="scf/6-31g**", return_wfn=True):
         #  The three components of the SCF dipole [Debye]
-        x = self.psi4.get_variable('SCF DIPOLE X')
-        y = self.psi4.get_variable('SCF DIPOLE Y')
-        z = self.psi4.get_variable('SCF DIPOLE Z')
-        total = np.sqrt(x * x + y * y + z * z)
-        return (x, y, z, total)
+        dipole_vec = self.psi4.variable('SCF DIPOLE')
+        dipole = np.sqrt(np.sum(dipole_vec**2))
+        return (dipole_vec, dipole)
 
     @property
     def HOMO(self):

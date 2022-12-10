@@ -44,12 +44,12 @@ Psikit is under development but you can install the current version of Psikit fr
     print("SCF Energy: ", pk.energy())
     print("HOMO: ", pk.HOMO)
     print("LUMO: ", pk.LUMO)
-    x, y, z, total = pk.dipolemoment
-    print("SCF Total Dipole Moment: {}".format(total))
-    # SCF Energy:  -230.712279648862
-    # HOMO:  -0.32848562009092513
-    # LUMO:  0.1456515222506689
-    # SCF Total Dipole Moment: 3.292464934070545e-05
+    (x, y, z), dipole = pk.dipolemoment
+    print("SCF Total Dipole Moment: {}".format(dipole))
+    # SCF Energy:  -230.71352353929012
+    # HOMO:  -0.330682742725788
+    # LUMO:  0.1490871775062264
+    # SCF Total Dipole Moment: 2.952242201955424e-07
 
 ### Structure optimization
 
