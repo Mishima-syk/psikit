@@ -7,6 +7,7 @@ import glob
 import os
 import uuid
 import warnings
+from collections import defaultdict
 from tempfile import mkdtemp
 from shutil import rmtree
 from debtcollector import moves
@@ -139,7 +140,7 @@ class Psikit(object):
     def save_cube(self):
         self.psi4.cubeprop(self.wfn)
 
-    def calc_resp_charges(self):
+    def calc_resp_charges(self, constrain_symmetric_atoms=False):
         if self.wfn.molecule() == None:
             print('please run optimze() at first!')
             return None
@@ -157,6 +158,15 @@ class Psikit(object):
                    'RESTRAINT'          : True,
                    'RADIUS'             : {'Br':1.98, 'I':2.09,}
                    }
+
+        if constrain_symmetric_atoms:
+            ranks = Chem.CanonicalRankAtoms(self.mol, breakTies=False)
+            groups = defaultdict(list)
+            for idx, rank in enumerate(ranks):
+                groups[rank].append(idx + 1)  # as RESP atoms are 1-indexed but RDKit 0-indexed
+            constraint_groups = [constraint_group for constraint_group in groups.values()]
+            options['CONSTRAINT_GROUP'] = constraint_groups
+
         charges = resp.resp([self.wfn.molecule()], options)
         #breakpoint()
 
